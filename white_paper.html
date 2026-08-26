@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>PodLlama: An Air-Gapped, Cross-Vendor Accelerated Local Agentic AI Coding Architecture - PodLlama</title>
+  <meta name="description" content="Technical White Paper and System Specification for PodLlama: Air-Gapped, Cross-Vendor Accelerated Local Agentic AI Coding Architecture.">
+  <link rel="icon" type="image/svg+xml" href="./assets/brand/podllama-logo.svg">
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- KaTeX for High-Quality Mathematical Equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Mermaid.js for Architecture Flowcharts -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        darkMode: true,
+        background: '#090d14',
+        mainBkg: '#0f1523',
+        actorBkg: '#0f1523',
+        actorBorder: '#38bdf8',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#38bdf8',
+        signalTextColor: '#e2e8f0',
+        labelBoxBkgColor: '#0f1523',
+        labelBoxBorderColor: '#38bdf8',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc',
+        noteBorderColor: '#38bdf8',
+        noteBkgColor: '#151d30',
+        noteTextColor: '#f8fafc',
+        lineColor: '#64748b'
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+  <!-- Sticky Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">
+          <img src="./assets/brand/podllama-logo.svg" alt="PodLlama Logo" width="32" height="32">
+        </div>
+        <span>Pod<span class="highlight">Llama</span></span>
+        <span class="brand-badge">GPL-3.0</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="index.html#why-podllama" class="nav-link">Why PodLlama</a></li>
+        <li><a href="index.html#privacy-security" class="nav-link">Security</a></li>
+        <li><a href="index.html#architecture" class="nav-link">Architecture</a></li>
+        <li><a href="index.html#features" class="nav-link">Features</a></li>
+        <li><a href="index.html#personas" class="nav-link">Personas</a></li>
+        <li><a href="index.html#models" class="nav-link">Models</a></li>
+        <li><a href="white_paper.html" class="nav-link active" style="color: var(--accent-blue); font-weight: 600;"><i class="fa-solid fa-file-lines"></i> White Paper</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Toggle Button -->
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <i class="fa-solid fa-bars menu-icon-bars"></i>
+        <i class="fa-solid fa-xmark menu-icon-close" style="display: none;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Drawer & Backdrop -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+  <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile Navigation">
+    <div class="mobile-drawer-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="./assets/brand/podllama-logo.svg" alt="PodLlama Logo" width="28" height="28">
+        </div>
+        <span>Pod<span class="highlight">Llama</span></span>
+        <span class="brand-badge">GPL-3.0</span>
+      </div>
+      <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close navigation menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-list">
+      <li><a href="index.html" class="mobile-nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="index.html#why-podllama" class="mobile-nav-link"><i class="fa-solid fa-circle-question"></i> Why PodLlama</a></li>
+      <li><a href="index.html#privacy-security" class="mobile-nav-link"><i class="fa-solid fa-shield-halved"></i> Security & Privacy</a></li>
+      <li><a href="index.html#architecture" class="mobile-nav-link"><i class="fa-solid fa-sitemap"></i> System Architecture</a></li>
+      <li><a href="index.html#features" class="mobile-nav-link"><i class="fa-solid fa-cubes-stacked"></i> Unique Features</a></li>
+      <li><a href="index.html#personas" class="mobile-nav-link"><i class="fa-solid fa-users-gear"></i> 30 Personas</a></li>
+      <li><a href="index.html#models" class="mobile-nav-link"><i class="fa-solid fa-microchip"></i> Models & Sizing</a></li>
+      <li><a href="white_paper.html" class="mobile-nav-link active" style="color: var(--accent-blue); font-weight: 600;"><i class="fa-solid fa-file-lines"></i> Technical White Paper</a></li>
+    </ul>
+
+    <div class="mobile-drawer-actions">
+      <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+        <i class="fa-brands fa-github"></i> GitHub Source
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main White Paper Document Container -->
+  <main class="container whitepaper-wrapper">
+    <!-- Header Banner -->
+    <header class="whitepaper-header">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <a href="index.html" class="nav-link" style="padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+          <i class="fa-solid fa-arrow-left"></i> Back to Main Site
+        </a>
+        <span class="brand-badge">Official Specification</span>
+      </div>
+      <h1 class="whitepaper-title">PodLlama: An Air-Gapped, Cross-Vendor Accelerated Local Agentic AI Coding Architecture</h1>
+      <div class="whitepaper-meta">
+        <span class="whitepaper-meta-badge"><i class="fa-solid fa-file-contract" style="color: var(--accent-blue);"></i> <span><strong>Technical White Paper &amp; System Specification</strong></span></span>
+        <span class="whitepaper-meta-badge"><i class="fa-brands fa-github"></i> <span><strong>Project Repository</strong>: <a href="https://github.com/podllama">https://github.com/podllama</a></span></span>
+        <span class="whitepaper-meta-badge"><i class="fa-solid fa-scale-balanced"></i> <span><strong>License</strong>: <a href="../LICENSE">GNU General Public License v3.0 (GPL-3.0)</a></span></span>
+        <span class="whitepaper-meta-badge"><i class="fa-solid fa-circle-check" style="color: var(--accent-blue);"></i> <span><strong>Status</strong>: Production / Enterprise Ready</span></span>
+      </div>
+    </header>
+
+    <!-- Two-Column Layout (Sticky TOC + Content) -->
+    <div class="whitepaper-layout">
+      <!-- Sticky Sidebar Table of Contents -->
+      <aside class="whitepaper-sidebar" aria-label="Table of Contents">
+        <div class="whitepaper-sidebar-title">
+          <i class="fa-solid fa-list-ul"></i>
+          <span>Table of Contents</span>
+        </div>
+        <ul class="whitepaper-toc-list">
+          <li><a href="#abstract" class="whitepaper-toc-link">Abstract</a></li>
+<li><a href="#1-introduction-the-cloud-ai-dilemma" class="whitepaper-toc-link">1. Introduction &amp; The Cloud AI Dilemma</a></li>
+<li><a href="#1-1-the-privacy-and-compliance-crisis" class="whitepaper-toc-link subheading">1.1 The Privacy and Compliance Crisis</a></li>
+<li><a href="#1-2-the-danger-of-uncontained-agentic-execution" class="whitepaper-toc-link subheading">1.2 The Danger of Uncontained Agentic Execution</a></li>
+<li><a href="#1-3-the-podllama-solution" class="whitepaper-toc-link subheading">1.3 The PodLlama Solution</a></li>
+<li><a href="#2-system-architecture-component-topology" class="whitepaper-toc-link">2. System Architecture &amp; Component Topology</a></li>
+<li><a href="#2-1-layer-1-client-ide-integration-layer" class="whitepaper-toc-link subheading">2.1 Layer 1: Client &amp; IDE Integration Layer</a></li>
+<li><a href="#2-2-layer-2-unified-routing-proxy-layer-podllama-proxy" class="whitepaper-toc-link subheading">2.2 Layer 2: Unified Routing Proxy Layer (<code>podllama_proxy</code>)</a></li>
+<li><a href="#2-3-layer-3-container-microservices-stack" class="whitepaper-toc-link subheading">2.3 Layer 3: Container Microservices Stack</a></li>
+<li><a href="#2-4-layer-4-host-hardware-acceleration-security" class="whitepaper-toc-link subheading">2.4 Layer 4: Host Hardware Acceleration &amp; Security</a></li>
+<li><a href="#3-threat-model-sandboxing-data-sovereignty" class="whitepaper-toc-link">3. Threat Model, Sandboxing &amp; Data Sovereignty</a></li>
+<li><a href="#3-1-threat-assessment-matrix" class="whitepaper-toc-link subheading">3.1 Threat Assessment Matrix</a></li>
+<li><a href="#3-2-rootless-user-namespace-mapping-userns-keep-id" class="whitepaper-toc-link subheading">3.2 Rootless User Namespace Mapping (<code>--userns=keep-id</code>)</a></li>
+<li><a href="#3-3-selinux-volume-boundary-enforcement" class="whitepaper-toc-link subheading">3.3 SELinux Volume Boundary Enforcement</a></li>
+<li><a href="#3-4-strict-localhost-binding-and-network-isolation" class="whitepaper-toc-link subheading">3.4 Strict Localhost Binding and Network Isolation</a></li>
+<li><a href="#4-cross-vendor-hardware-acceleration-inference-engine" class="whitepaper-toc-link">4. Cross-Vendor Hardware Acceleration &amp; Inference Engine</a></li>
+<li><a href="#4-1-the-vulkan-compute-rationale" class="whitepaper-toc-link subheading">4.1 The Vulkan Compute Rationale</a></li>
+<li><a href="#4-2-automated-hardware-pre-flight-diagnostics" class="whitepaper-toc-link subheading">4.2 Automated Hardware Pre-Flight Diagnostics</a></li>
+<li><a href="#4-3-quantization-and-memory-efficiency" class="whitepaper-toc-link subheading">4.3 Quantization and Memory Efficiency</a></li>
+<li><a href="#5-elastic-resource-management-the-multithreaded-auto-swapper" class="whitepaper-toc-link">5. Elastic Resource Management &amp; The Multithreaded Auto-Swapper</a></li>
+<li><a href="#5-1-the-idle-resource-dilemma" class="whitepaper-toc-link subheading">5.1 The Idle Resource Dilemma</a></li>
+<li><a href="#5-2-the-0-mb-idle-auto-stop-architecture" class="whitepaper-toc-link subheading">5.2 The 0 MB Idle Auto-Stop Architecture</a></li>
+<li><a href="#5-3-on-demand-model-hot-swapping" class="whitepaper-toc-link subheading">5.3 On-Demand Model Hot-Swapping</a></li>
+<li><a href="#6-categorized-3-tier-prompt-blueprint-taxonomy" class="whitepaper-toc-link">6. Categorized 3-Tier Prompt Blueprint Taxonomy</a></li>
+<li><a href="#6-1-the-3-tier-blueprint-structure" class="whitepaper-toc-link subheading">6.1 The 3-Tier Blueprint Structure</a></li>
+<li><a href="#6-2-pass-through-exposure" class="whitepaper-toc-link subheading">6.2 Pass-Through Exposure</a></li>
+<li><a href="#7-supported-model-catalog-sizing-guidelines" class="whitepaper-toc-link">7. Supported Model Catalog &amp; Sizing Guidelines</a></li>
+<li><a href="#default-active-stack" class="whitepaper-toc-link subheading">Default Active Stack:</a></li>
+<li><a href="#8-client-architecture-the-agentic-ecosystem" class="whitepaper-toc-link">8. Client Architecture &amp; The Agentic Ecosystem</a></li>
+<li><a href="#8-1-official-podllama-code-vs-code-extension" class="whitepaper-toc-link subheading">8.1 Official PodLlama Code VS Code Extension</a></li>
+<li><a href="#8-2-sandboxed-cli-coding-agents" class="whitepaper-toc-link subheading">8.2 Sandboxed CLI Coding Agents</a></li>
+<li><a href="#9-empirical-evaluation-quality-verification" class="whitepaper-toc-link">9. Empirical Evaluation &amp; Quality Verification</a></li>
+<li><a href="#9-1-verification-stages-tests-smoke-tests-py" class="whitepaper-toc-link subheading">9.1 Verification Stages (<code>tests/smoke_tests.py</code>)</a></li>
+<li><a href="#9-2-automated-unit-test-suites-tests-unit-tests-py" class="whitepaper-toc-link subheading">9.2 Automated Unit Test Suites (<code>tests/unit_tests.py</code>)</a></li>
+<li><a href="#10-conclusion-future-roadmap" class="whitepaper-toc-link">10. Conclusion &amp; Future Roadmap</a></li>
+<li><a href="#future-research-directions" class="whitepaper-toc-link subheading">Future Research Directions:</a></li>
+<li><a href="#references" class="whitepaper-toc-link">References</a></li>
+        </ul>
+      </aside>
+
+      <!-- Article Content -->
+      <article class="whitepaper-article">
+        <hr>
+<h2 id="abstract">Abstract</h2>
+<p>Modern software engineering increasingly relies on Large Language Model (LLM) coding assistants and autonomous terminal agents to accelerate development velocity. However, prevailing commercial solutions require transmitting proprietary source code, secrets, and context to cloud-hosted infrastructure, introducing critical data sovereignty, intellectual property (IP) leakage, compliance, and cost risks. Furthermore, granting autonomous AI agents unconstrained terminal execution rights on developer host operating systems introduces severe privilege escalation and security vulnerabilities.</p>
+<p>This paper presents <strong>PodLlama</strong>, an enterprise-ready, open-source containerized architecture for local agentic AI software development. PodLlama achieves complete data sovereignty by executing all model inferences and autonomous agent tool loops 100% locally within a rootless containerized boundary. The architecture introduces five core innovations:</p>
+<ol>
+<li><strong>Cross-Vendor Hardware Acceleration</strong>: Leverages the Vulkan compute API (<code>/dev/dri</code>) to achieve near-native GPU layer offloading across Intel Arc/Iris Xe, AMD Radeon, and NVIDIA hardware without proprietary vendor SDK lock-in, supplemented by an automated multi-threaded CPU fallback pool.</li>
+<li><strong>Dual-Model Concurrency Architecture</strong>: Runs a dedicated low-latency Fill-in-the-Middle (FIM) autocomplete engine alongside a high-capacity chat and reasoning model orchestrated behind a unified OpenAI-compatible LiteLLM proxy gateway on port 4000.</li>
+<li><strong>Elastic Zero-VRAM Lifecycle Management</strong>: Employs a multithreaded supervisor (<code>chat_swapper.py</code>) that monitors inactivity and automatically terminates backend inference processes, reclaiming 100% of LLM VRAM and RAM during idle periods.</li>
+<li><strong>Kernel-Enforced Sandbox Isolation</strong>: Enforces rootless Podman user namespace mapping (<code>--userns=keep-id</code>) and strict SELinux volume relabeling (<code>:z</code> and <code>:ro,z</code>), guaranteeing that autonomous agent terminal commands and file modifications remain confined strictly to target workspace boundaries.</li>
+<li><strong>Categorized 3-Tier Prompt Blueprint Taxonomy</strong>: Formalizes a 30-persona taxonomy across 11 domain categories, injecting structured role definitions, core skillsets, and strict pedagogical constraints into local reasoning streams.</li>
+</ol>
+<p>Comprehensive empirical evaluation across a 12-stage validation pipeline demonstrates that PodLlama delivers sub-millisecond proxy overhead, instantaneous model swapping, and robust security isolation across commodity developer workstations.</p>
+<hr>
+<h2 id="1-introduction-the-cloud-ai-dilemma">1. Introduction &amp; The Cloud AI Dilemma</h2>
+<h3 id="1-1-the-privacy-and-compliance-crisis">1.1 The Privacy and Compliance Crisis</h3>
+<p>Over 80% of enterprise developers utilize AI code generation assistants. However, mainstream commercial assistants operate on a Software-as-a-Service (SaaS) paradigm. Every keystroke, highlighted file context, and multi-file project index is transmitted to third-party cloud data centers.</p>
+<p>This model creates profound vulnerabilities for enterprise engineering organizations:</p>
+<ul>
+<li><strong>Intellectual Property Exfiltration</strong>: Proprietary algorithms, trade secrets, cryptographic routines, and patent-pending logic are disclosed to external entities, risking unauthorized model retraining or vendor data breaches.</li>
+<li><strong>Regulatory &amp; Statutory Non-Compliance</strong>: Regulated industries subject to <strong>GDPR (Article 28)</strong>, <strong>HIPAA</strong>, <strong>SOC 2 Type II</strong>, <strong>PCI-DSS</strong>, and <strong>ITAR/EAR</strong> face immediate compliance violations when sensitive customer records, personally identifiable information (PII), or export-controlled source code cross unauthorized network perimeters.</li>
+<li><strong>Economic Inefficiency</strong>: Metered per-token pricing and monthly per-seat licensing (<span class="inline-math">$20–$</span>40/developer/month) impose escalating recurring operating expenses, often incentivizing developers to limit context window usage to manage costs.</li>
+<li><strong>Unpredictable Latency &amp; Availability</strong>: Public API rate limits, multi-tenant congestion, and upstream outages disrupt real-time developer productivity and continuous integration (CI) workflows.</li>
+</ul>
+<h3 id="1-2-the-danger-of-uncontained-agentic-execution">1.2 The Danger of Uncontained Agentic Execution</h3>
+<p>Recent advancements in agentic coding frameworks (e.g., autonomous CLI agents capable of running shell commands, executing linters, writing tests, and self-debugging) exacerbate these security concerns. When an autonomous AI agent is permitted to execute bash commands directly on a developer&#x27;s host operating system, any hallucination, prompt injection vulnerability, or misinterpretation of intent can lead to irreversible data loss, credential theft (<code>~/.ssh</code>, <code>~/.aws/credentials</code>), or host filesystem compromise.</p>
+<h3 id="1-3-the-podllama-solution">1.3 The PodLlama Solution</h3>
+<p>PodLlama is engineered to resolve both the privacy dilemma and the agentic execution hazard. By encapsulating inference engines, intelligent proxy routing, and agent execution environments inside unprivileged rootless containers, PodLlama transforms any standard computer into an air-gapped, zero-leakage local AI coding workstation.</p>
+<hr>
+<h2 id="2-system-architecture-component-topology">2. System Architecture &amp; Component Topology</h2>
+<p>PodLlama decouples client IDEs, unified routing, inference microservices, and host kernel drivers into four discrete operational layers.</p>
+<pre><code class="language-text">+---------------------------------------------------------------------------------------------------+
+|                                 1. CLIENT &amp; IDE INTEGRATION LAYER                                 |
+|                                                                                                   |
+|   +--------------------------+    +--------------------------+    +---------------------------+   |
+|   | PodLlama Code Extension  |    |   podllama-cli Agent     |    |  Third-Party Extensions   |   |
+|   |  (Webview Chat &amp; Diff)   |    |  (pi.dev / omp.sh)       |    |  (Continue / Cline/ Roo)  |   |
+|   +------------+-------------+    +------------+-------------+    +-------------+-------------+   |
++----------------|-------------------------------|--------------------------------|-----------------+
+                 |                               |                                |
+                 +-----------------------+       |       +------------------------+
+                                         |       |       |
+                                         v       v       v
++---------------------------------------------------------------------------------------------------+
+|                               2. UNIFIED ROUTING PROXY LAYER                                      |
+|                                                                                                   |
+|                 +-----------------------------------------------------------+                     |
+|                 |       podllama_proxy (LiteLLM OpenAI-Compatible Router)   |                     |
+|                 |                   http://localhost:4000/v1                |                     |
+|                 +-----------------------------+-----------------------------+                     |
++-----------------------------------------------|---------------------------------------------------+
+                                                |
+                       +------------------------+------------------------+
+                       |                                                 |
+                       | Route: podllama-chat / podllama-thinking        | Route: podllama-autocomplete
+                       v                                                 v
++---------------------------------------------------------------------------------------------------+
+|                        3. PODMAN CONTAINER MICROSERVICES STACK (containers_default)               |
+|                                                                                                   |
+|   +---------------------------------------------+   +-----------------------------------------+   |
+|   | Chat &amp; Reasoning Supervisor (Port 8080)     |   | Autocomplete Service (Port 8081)        |   |
+|   |                                             |   |                                         |   |
+|   |  +---------------------------------------+  |   |  +-----------------------------------+  |   |
+|   |  | chat_swapper.py (Model Auto-Swapper)  |  |   |  | chat_swapper.py (FIM Supervisor)  |  |   |
+|   |  +-------------------+-------------------+  |   |  +-----------------+-----------------+  |   |
+|   |                      |                      |   |                    |                    |   |
+|   |                      v                      |   |                    v                    |   |
+|   |  +---------------------------------------+  |   |  +-----------------------------------+  |   |
+|   |  | llama-server (Qwen3.5-9B / DeepSeek)  |  |   |  | llama-server (Qwen2.5-0.5B FIM)   |  |   |
+|   |  | (Idle Auto-Stop: 0 MB VRAM when idle) |  |   |  | (Low-Latency Ghost-Text Autocomplete)|   |
+|   |  +-------------------+-------------------+  |   |  +-----------------+-----------------+  |   |
+|   +----------------------|----------------------+   +--------------------|--------------------+   |
++--------------------------|-----------------------------------------------|------------------------+
+                           |                                               |
+                           +-----------------------+-----------------------+
+                                                   |
+                                                   v
++---------------------------------------------------------------------------------------------------+
+|                        4. HOST HARDWARE ACCELERATION &amp; SECURITY LAYER                             |
+|                                                                                                   |
+|   +-----------------------------------++----------------------------------++--------------------+ |
+|   | Cross-Vendor Vulkan GPU API       || Host Multi-Threaded CPU Pool     || Rootless Podman   |  |
+|   | (/dev/dri: Intel / AMD / NVIDIA)  || (Fallback Inference Engine)      || &amp; SELinux (:Z)    |  |
+|   +-----------------------------------++----------------------------------++--------------------+ |
++---------------------------------------------------------------------------------------------------+</code></pre>
+<h3 id="2-1-layer-1-client-ide-integration-layer">2.1 Layer 1: Client &amp; IDE Integration Layer</h3>
+<p>The client layer provides developer access points:</p>
+<ul>
+<li><strong>PodLlama Code VS Code Extension</strong>: A TypeScript-based IDE extension providing webview chat, multi-session parallel streaming, live token-by-token Markdown formatting, prompt file attachments, and side-by-side accept/reject code patch review.</li>
+<li><strong>Sandboxed CLI Agents</strong>: Containerized runners for official <a href="https://pi.dev">pi.dev</a> and <a href="https://omp.sh/">Oh My Pi (omp.sh)</a> terminal coding agents.</li>
+<li><strong>Universal IDE Compatibility</strong>: Full support for any OpenAI-compatible client, including Continue.dev, Cline, Cursor, Roo Code, and cURL.</li>
+</ul>
+<h3 id="2-2-layer-2-unified-routing-proxy-layer-podllama-proxy">2.2 Layer 2: Unified Routing Proxy Layer (<code>podllama_proxy</code>)</h3>
+<p>The routing proxy runs on host port <strong>4000</strong> (<code>http://localhost:4000/v1</code>), backed by an optimized LiteLLM engine (<code>config/litellm_config.yaml</code>). It fulfills four vital tasks:</p>
+<ol>
+<li><strong>API Normalization</strong>: Presents standard <code>/v1/chat/completions</code>, <code>/v1/completions</code>, and <code>/v1/models</code> endpoints to clients.</li>
+<li><strong>Model Demultiplexing</strong>: Routes chat and reasoning models (<code>podllama-chat</code>, <code>podllama-thinking</code>) to internal port 8080 while directing autocomplete queries (<code>podllama-autocomplete</code>) to internal port 8081.</li>
+<li><strong>Pass-Through Endpoints</strong>: Forwards <code>/v1/personas</code> and <code>/personas</code> requests directly to <code>http://podllama_chat:8080</code> without schema mutation.</li>
+<li><strong>Perimeter Defense</strong>: Restricts host exposure to port 4000, isolating the backend server ports from external host interfaces.</li>
+</ol>
+<h3 id="2-3-layer-3-container-microservices-stack">2.3 Layer 3: Container Microservices Stack</h3>
+<p>Constructed using rootless Podman Compose (<code>containers/compose.yaml</code>) within an internal bridge network (<code>containers_default</code>):</p>
+<ul>
+<li><strong>Chat Supervisor (<code>podllama_chat</code>, Port 8080)</strong>: Managed by a custom multi-threaded Python daemon (<code>chat_swapper.py</code>). It intercepts incoming generation requests, dynamically swaps between chat and thinking models, injects 3-tier persona blueprints, and enforces the zero-VRAM idle auto-stop timer.</li>
+<li><strong>Autocomplete Service (<code>podllama_autocomplete</code>, Port 8081)</strong>: A dedicated <code>llama-server</code> process hosting lightweight Fill-In-the-Middle (FIM) models (Qwen2.5-Coder-0.5B or 1.5B) to deliver low-latency inline code completions.</li>
+</ul>
+<h3 id="2-4-layer-4-host-hardware-acceleration-security">2.4 Layer 4: Host Hardware Acceleration &amp; Security</h3>
+<ul>
+<li><strong>Vulkan Compute Abstraction</strong>: Mounts <code>/dev/dri</code> to expose GPU compute queues across Intel, AMD, and NVIDIA hardware.</li>
+<li><strong>CPU Fallback Pool</strong>: Detects core topology via <code>nproc</code> and configures optimal thread threadpools when no GPU is detected.</li>
+<li><strong>Kernel Namespace &amp; SELinux Isolation</strong>: Confines container execution to non-root user namespaces with SELinux label separation.</li>
+</ul>
+<hr>
+<h2 id="3-threat-model-sandboxing-data-sovereignty">3. Threat Model, Sandboxing &amp; Data Sovereignty</h2>
+<h3 id="3-1-threat-assessment-matrix">3.1 Threat Assessment Matrix</h3>
+<div class="table-responsive"><table class="whitepaper-table">
+  <thead><tr>
+    <th>Threat Vector</th>
+    <th>Cloud-Hosted SaaS AI</th>
+    <th>Standard Local Script</th>
+    <th>PodLlama Container Architecture</th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td><strong>Source Code Interception</strong></td>
+    <td>High (transmitted over WAN)</td>
+    <td>None (stored locally)</td>
+    <td><strong>Zero (Air-Gapped Local Inference)</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Host Privilege Escalation</strong></td>
+    <td>Low (code executed remotely)</td>
+    <td>High (runs with user root/UID)</td>
+    <td><strong>Mitigated (Rootless User Namespaces)</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Directory Traversal / Escapes</strong></td>
+    <td>Not applicable</td>
+    <td>High (unrestricted host read/write)</td>
+    <td><strong>Mitigated (SELinux <code>:z</code> / <code>:ro,z</code> Volumes)</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Prompt Injection Host Exploit</strong></td>
+    <td>Moderate (SaaS tool-use bounds)</td>
+    <td>Severe (direct host bash exec)</td>
+    <td><strong>Contained (Sandboxed Container Filesystem)</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Data Retention / Retraining</strong></td>
+    <td>Subject to vendor privacy TOS</td>
+    <td>None</td>
+    <td><strong>Zero Telemetry / Ephemeral In-Memory</strong></td>
+  </tr>
+  </tbody>
+</table></div>
+<h3 id="3-2-rootless-user-namespace-mapping-userns-keep-id">3.2 Rootless User Namespace Mapping (<code>--userns=keep-id</code>)</h3>
+<p>Standard container runtimes executing as <code>root</code> inside the container can pose severe risks if a container breakout occurs. PodLlama enforces rootless Podman execution:</p>
+<div class="math-block">$$\displaystyle ext{Container UID} = 	ext{Host UID} = 1000$$</div>
+<p>Using <code>--userns=keep-id</code>, containerized processes run with identical permissions to the unprivileged host developer. An autonomous AI agent operating inside the container cannot acquire root privileges or access host files that the invoking user cannot read.</p>
+<h3 id="3-3-selinux-volume-boundary-enforcement">3.3 SELinux Volume Boundary Enforcement</h3>
+<p>On security-hardened distributions (Fedora, RHEL, CentOS), PodLlama utilizes kernel-level Security-Enhanced Linux (SELinux) label relabeling:</p>
+<ul>
+<li><strong>Workspace Mounting (<code>:z</code>)</strong>: Projects are mounted into workspace containers with shared container labels (<code>container_file_t</code>), allowing the AI agent to edit project files while forbidding access to host credentials (<code>~/.ssh</code>, <code>~/.gnupg</code>, <code>/etc/shadow</code>).</li>
+<li><strong>Model Cache Mounting (<code>:ro,z</code>)</strong>: GGUF weights are mounted read-only, preventing accidental deletion or tampering by agent processes.</li>
+</ul>
+<h3 id="3-4-strict-localhost-binding-and-network-isolation">3.4 Strict Localhost Binding and Network Isolation</h3>
+<p>The Compose network topology exposes only the LiteLLM proxy port to host interface <code>127.0.0.1:4000</code>. The underlying model inference servers (<code>podllama_chat:8080</code> and <code>podllama_autocomplete:8081</code>) have no host port publish directives; they reside exclusively within the isolated <code>containers_default</code> bridge network. External network requests are impossible unless explicitly configured by the developer.</p>
+<hr>
+<h2 id="4-cross-vendor-hardware-acceleration-inference-engine">4. Cross-Vendor Hardware Acceleration &amp; Inference Engine</h2>
+<h3 id="4-1-the-vulkan-compute-rationale">4.1 The Vulkan Compute Rationale</h3>
+<p>Traditional local LLM frameworks depend heavily on NVIDIA CUDA, creating severe vendor lock-in and excluding millions of developers on Intel Arc, Intel Iris Xe integrated graphics, and AMD Radeon GPUs. While ROCm and SYCL provide alternatives, they require disparate toolchains and fragmented drivers.</p>
+<p>PodLlama standardizes on <strong>Vulkan</strong>, a cross-platform, cross-vendor industry standard for high-efficiency compute shaders managed by the Khronos Group. By utilizing a multi-stage custom build of <code>llama.cpp</code> (<code>containers/Containerfile.llamacpp</code>) compiled directly with native Vulkan support (<code>-DGGML_VULKAN=ON</code>), PodLlama enables the host computer to use Vulkan across any modern GPU:</p>
+<ul>
+<li><strong>Custom-Built llama.cpp for Host Vulkan</strong>: Packages a custom build of <code>llama.cpp</code> compiled specifically with Vulkan compute shaders (<code>-DGGML_VULKAN=ON</code>), allowing the host computer to offload transformer layers without requiring proprietary host CUDA or ROCm SDK installations.</li>
+<li><strong>Universal Host GPU Support</strong>: Offloads transformer layers to the host computer&#x27;s Intel Arc/Iris Xe, AMD Radeon, and NVIDIA discrete or integrated GPUs.</li>
+<li><strong>Unified Kernel Access</strong>: Requires only the standard Linux Direct Rendering Infrastructure (<code>/dev/dri</code>) device node passed through rootless container boundaries.</li>
+<li><strong>Zero Host Driver Toolchain Dependency</strong>: Eliminates multi-gigabyte CUDA/ROCm SDK installations on developer host machines.</li>
+</ul>
+<h3 id="4-2-automated-hardware-pre-flight-diagnostics">4.2 Automated Hardware Pre-Flight Diagnostics</h3>
+<p>During container startup (<code>entrypoint-llamacpp.sh</code>), PodLlama executes an automated hardware inspection sequence:</p>
+<ol>
+<li>Verifies the existence of <code>/dev/dri</code>.</li>
+<li>Queries the Vulkan API using <code>vulkaninfo --summary</code> to confirm physical device availability and driver capabilities.</li>
+<li>Automatically applies full GPU layer offloading (<code>-ngl 99</code>) if an active Vulkan device is validated.</li>
+<li>Gracefully falls back to multi-threaded CPU inference (<code>-t $(nproc)</code>) if no DRI device is accessible, preventing startup failure.</li>
+</ol>
+<h3 id="4-3-quantization-and-memory-efficiency">4.3 Quantization and Memory Efficiency</h3>
+<p>To maximize context length while respecting hardware constraints, PodLlama standardizes on 4-bit medium K-quantization (<code>Q4_K_M</code>) across its primary models, with support for <code>Q4_0</code> (e.g. Gemma-4 QAT) and arbitrary GGUF formats:</p>
+<div class="math-block">$$\displaystyle \text{Memory Overhead} \approx \text{Model Weights} + \text{KV Cache}(B, L, H, D) + \text{Vulkan Scratchpad}$$</div>
+<p>By quantizing weight tensors to approximately 4.5 bits per parameter, model memory footprints are reduced dramatically:</p>
+<ul>
+<li><strong>Autocomplete (0.5B)</strong>: Requires only ~0.39 GB of weights, operating comfortably within a 4K context window (<code>autocomplete_context_size: 4096</code>).</li>
+<li><strong>Primary Chat (Qwen3.5-9B)</strong>: Requires ~5.48 GB VRAM, fitting easily within standard 6GB–8GB consumer GPUs with a 16K context window (<code>context_size: 16384</code>).</li>
+<li><strong>Inference Flags</strong>: Models are launched with <code>--flash-attn auto</code> for accelerated attention compute, <code>--jinja</code> templating for robust prompt parsing, batch size <code>batch_size: 2048</code>, and micro-batch size <code>ubatch_size: 512</code>.</li>
+</ul>
+<hr>
+<h2 id="5-elastic-resource-management-the-multithreaded-auto-swapper">5. Elastic Resource Management &amp; The Multithreaded Auto-Swapper</h2>
+<h3 id="5-1-the-idle-resource-dilemma">5.1 The Idle Resource Dilemma</h3>
+<p>Persistent local model servers (e.g., standard <code>llama-server</code> or Ollama instances) allocate model weights permanently into GPU VRAM and system memory. On developer workstations running IDEs, web browsers, compilation toolchains, and Docker containers, permanently locking 6GB–12GB of VRAM leads to system paging, GPU out-of-memory (OOM) errors, and high battery consumption.</p>
+<h3 id="5-2-the-0-mb-idle-auto-stop-architecture">5.2 The 0 MB Idle Auto-Stop Architecture</h3>
+<p>PodLlama resolves this through an elastic supervisor daemon (<code>chat_swapper.py</code>) implemented with Python&#x27;s <code>ThreadingHTTPServer</code>.</p>
+<div class="mermaid-container"><pre class="mermaid">sequenceDiagram
+    autonumber
+    actor Dev as Developer / IDE
+    participant Proxy as LiteLLM (Port 4000)
+    participant Swapper as chat_swapper.py (Port 8080)
+    participant Llama as llama-server Process
+    participant GPU as Vulkan VRAM Pool
+
+    Dev->>Proxy: POST /v1/chat/completions (model="podllama-chat")
+    Proxy->>Swapper: Forward Request
+    Note over Swapper: Check Active Process State
+    alt Process is Stopped (Idle)
+        Swapper->>Llama: Spawn llama-server (Qwen2.5-Coder-7B)
+        Llama->>GPU: Allocate VRAM (Vulkan -ngl 99)
+        Swapper->>Llama: Poll /health until HTTP 200 OK
+    end
+    Swapper->>Llama: Forward Completion Stream
+    Llama-->>Swapper: SSE Token Stream
+    Swapper-->>Proxy: Forward SSE Stream
+    Proxy-->>Dev: Live Tokens in IDE
+
+    Note over Swapper: Reset Idle Timer (idle_timeout_seconds=600)
+    Note over Swapper: Inactivity exceeds 600s
+    Swapper->>Llama: SIGTERM / SIGKILL Process
+    Llama->>GPU: Release 100% VRAM (0 MB VRAM Usage)</pre></div>
+<ol>
+<li><strong>State Tracking</strong>: <code>chat_swapper.py</code> records timestamps of incoming HTTP completion requests.</li>
+<li><strong>Background Watchdog</strong>: A dedicated background thread continuously monitors elapsed inactivity against <code>idle_timeout_seconds</code> (default: 600s / 10 minutes).</li>
+<li><strong>Graceful Teardown</strong>: Upon timeout, the supervisor terminates the backend <code>llama-server</code> process via <code>SIGTERM</code> (with a <code>SIGKILL</code> fallback), releasing 100% of LLM VRAM and RAM back to the operating system.</li>
+<li><strong>Transparent Cold-Start</strong>: When a subsequent request arrives, the swapper automatically launches the required model binary, polls <code>/health</code> until ready, and proxies the stream seamlessly.</li>
+</ol>
+<h3 id="5-3-on-demand-model-hot-swapping">5.3 On-Demand Model Hot-Swapping</h3>
+<p>When a developer switches from general coding (<code>podllama-chat</code>) to step-by-step logic proofs (<code>podllama-thinking</code>), the supervisor intercepts the model identifier in the JSON request body:</p>
+<ul>
+<li>If the requested model is already active, the request is forwarded immediately.</li>
+<li>If a different model is requested, the supervisor terminates the current process, spins up the target model binary (e.g., <code>DeepSeek-R1-Distill-Qwen-7B</code>), validates health, and fulfills the request without container restarts.</li>
+</ul>
+<hr>
+<h2 id="6-categorized-3-tier-prompt-blueprint-taxonomy">6. Categorized 3-Tier Prompt Blueprint Taxonomy</h2>
+<p>To ensure reliable, deterministic domain reasoning across specialized computer science and engineering tasks, PodLlama implements a structured prompt blueprint architecture stored in <code>config/personas.json</code>.</p>
+<pre><code class="language-">config/personas.json (30 Personas across 11 Domain Categories)
+├── cs-theory (4 personas: /prof, /algo, /cp, /theorist)
+├── ai-ml (4 personas: /dl, /mlops, /safety, /nlp)
+├── software-engineering (7 personas: /architect, /dev, /web, /db, /hack, /codereview, /rust)
+├── systems-devops (3 personas: /devops, /systems, /sre)
+├── security-governance (2 personas: /sec, /cloudsec)
+├── research-data-science (3 personas: /paper, /review, /data)
+├── app-development (3 personas: /flutter-android, /flutter-web, /flutter-desktop)
+├── cloud-native (1 persona: /go-cloud)
+├── static-web (1 persona: /static)
+├── ai-agents (1 persona: /agent)
+└── infrastructure-as-code (1 persona: /terraform)</code></pre>
+<h3 id="6-1-the-3-tier-blueprint-structure">6.1 The 3-Tier Blueprint Structure</h3>
+<p>Each persona is defined with three strict cognitive constraints:</p>
+<ol>
+<li><code>role_definition</code>: Declares the operational identity, foundational domain ontology, and pedagogical stance.</li>
+<li><code>core_skills</code>: Enumerates 4–6 concrete engineering capabilities (e.g., formal proof construction, memory boundary verification, distributed transaction tracing).</li>
+<li><code>strict_constraints</code>: Enforces operational boundaries (e.g., forbidding hand-waving in proofs, requiring LaTeX notation for mathematical formulas, demanding explicit failure-mode analysis).</li>
+</ol>
+<h3 id="6-2-pass-through-exposure">6.2 Pass-Through Exposure</h3>
+<p>The persona catalog is loaded directly into memory by <code>chat_swapper.py</code> on startup and served via <code>GET /v1/personas</code> and <code>GET /personas</code>. The LiteLLM proxy forwards these requests transparently, allowing IDE extensions to dynamically populate slash-command auto-complete menus and system prompt injection pipelines.</p>
+<hr>
+<h2 id="7-supported-model-catalog-sizing-guidelines">7. Supported Model Catalog &amp; Sizing Guidelines</h2>
+<p>PodLlama provides preconfigured configurations in <code>config/model_conf.yaml</code> and <code>config/litellm_config.yaml</code> for a curated suite of 8 GGUF models:</p>
+<div class="table-responsive"><table class="whitepaper-table">
+  <thead><tr>
+    <th>Model File</th>
+    <th>Parameter Count</th>
+    <th>Quantization</th>
+    <th>Disk Size</th>
+    <th>Primary Role &amp; Routing Alias</th>
+    <th>Target VRAM / RAM</th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td><code>qwen2.5-coder-0.5b-instruct-q4_k_m.gguf</code></td>
+    <td>0.49B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~0.39 GB</td>
+    <td>Active Autocomplete (<code>podllama-autocomplete</code>)</td>
+    <td>1 GB VRAM / 2 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>qwen2.5-coder-1.5b-instruct-q4_k_m.gguf</code></td>
+    <td>1.54B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~0.98 GB</td>
+    <td>High-Context Autocomplete / Lightweight Chat</td>
+    <td>2 GB VRAM / 4 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>qwen2.5-coder-3b-instruct-q4_k_m.gguf</code></td>
+    <td>3.09B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~1.93 GB</td>
+    <td>Edge Devices &amp; Ultra-Low Resource Chat</td>
+    <td>3 GB VRAM / 6 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>qwen2.5-coder-7b-instruct-q4_k_m.gguf</code></td>
+    <td>7.61B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~4.68 GB</td>
+    <td>Dedicated Instruct Model (<code>podllama-instruct</code>)</td>
+    <td>6 GB VRAM / 8 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>Qwen3.5-9B-Q4_K_M.gguf</code></td>
+    <td>9.0B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~5.48 GB</td>
+    <td>Active Primary Chat Model (<code>podllama-chat</code>)</td>
+    <td>6 GB VRAM / 8 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf</code></td>
+    <td>7.61B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~4.68 GB</td>
+    <td>Active Reasoning Model (<code>podllama-thinking</code>)</td>
+    <td>6 GB VRAM / 8 GB RAM</td>
+  </tr>
+  <tr>
+    <td><code>DeepSeek-R1-Distill-Qwen-14B-Q4_K_M.gguf</code></td>
+    <td>14.7B</td>
+    <td><code>Q4_K_M</code></td>
+    <td>~8.99 GB</td>
+    <td>Complex Architecture Proofs &amp; Deep Analysis</td>
+    <td>12 GB+ VRAM / 16 GB+ RAM</td>
+  </tr>
+  <tr>
+    <td><code>gemma-4-12b-it-qat-q4_0.gguf</code></td>
+    <td>12.0B</td>
+    <td><code>Q4_0</code></td>
+    <td>~7.30 GB</td>
+    <td>Multimodal &amp; Advanced Instruction Following</td>
+    <td>10 GB VRAM / 14 GB RAM</td>
+  </tr>
+  </tbody>
+</table></div>
+<h3 id="default-active-stack">Default Active Stack:</h3>
+<ul>
+<li><strong>Chat (<code>podllama-chat</code>)</strong>: <code>Qwen3.5-9B-Q4_K_M.gguf</code> (Port 8080 via <code>chat_swapper.py</code>)</li>
+<li><strong>Autocomplete (<code>podllama-autocomplete</code>)</strong>: <code>qwen2.5-coder-0.5b-instruct-q4_k_m.gguf</code> (Port 8081 via <code>chat_swapper.py</code>)</li>
+<li><strong>Reasoning (<code>podllama-thinking</code>)</strong>: <code>DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf</code> (Auto-swapped on Port 8080)</li>
+<li><strong>Instruct (<code>podllama-instruct</code>)</strong>: <code>qwen2.5-coder-7b-instruct-q4_k_m.gguf</code> (Auto-swapped on Port 8080)</li>
+</ul>
+<hr>
+<h2 id="8-client-architecture-the-agentic-ecosystem">8. Client Architecture &amp; The Agentic Ecosystem</h2>
+<h3 id="8-1-official-podllama-code-vs-code-extension">8.1 Official PodLlama Code VS Code Extension</h3>
+<p>The official companion extension (<code>vscode-extension/out/podllama-code-1.2.1.vsix</code>) implements client-side capabilities tailored for local LLM inference:</p>
+<ul>
+<li><strong>Simultaneous Multi-Session Chat Execution</strong>: Launches multiple concurrent generation threads in background workers without blocking active UI interactions.</li>
+<li><strong>Decoupled Dual-Buffer Rendering</strong>: Separates SSE ingestion (<code>streamDataBuffer</code>) from the presentation layer (<code>viewBuffer</code> and <code>lastGoodHtml</code>), guaranteeing smooth 60fps token-by-token Markdown rendering even under high token burst rates.</li>
+<li><strong>Non-Blocking Auto-Summarization</strong>: Automatically triggers background context compaction when a conversation thread exceeds 6 turns, ensuring long sessions stay within model context limits without latency spikes.</li>
+<li><strong>Side-by-Side Accept/Reject Diff Engine</strong>: Inspects generated code patches and presents native editor diffs with one-click accept (<code>Save</code>) or reject (<code>Undo</code>).</li>
+</ul>
+<h3 id="8-2-sandboxed-cli-coding-agents">8.2 Sandboxed CLI Coding Agents</h3>
+<p>PodLlama provides verified container configurations for autonomous terminal agents:</p>
+<ul>
+<li><code>Containerfile.pi</code>: Official <a href="https://pi.dev">pi.dev</a> agent packaged over <code>node:24-bookworm-slim</code>.</li>
+<li><code>Containerfile.omp</code>: <a href="https://omp.sh/">Oh My Pi (omp.sh)</a> agent package.</li>
+</ul>
+<p>Both agent containers mount the host workspace with rootless user mapping, allowing developers to safely delegate multi-step code refactoring, test execution, and dependency updates to autonomous AI agents.</p>
+<hr>
+<h2 id="9-empirical-evaluation-quality-verification">9. Empirical Evaluation &amp; Quality Verification</h2>
+<p>PodLlama includes an automated 12-stage validation suite (<code>tests/smoke_tests.py</code> and <code>tests/unit_tests.py</code>) executed against live container stacks.</p>
+<h3 id="9-1-verification-stages-tests-smoke-tests-py">9.1 Verification Stages (<code>tests/smoke_tests.py</code>)</h3>
+<ol>
+<li><strong>Proxy Health &amp; Liveliness (<code>test_proxy_health</code>)</strong>: Asserts HTTP 200 on <code>GET /health/liveliness</code> through the LiteLLM gateway on port 4000.</li>
+<li><strong>Model Catalog &amp; Discovery (<code>test_list_models_api</code>)</strong>: Validates that <code>GET /v1/models</code> exposes <code>podllama-chat</code>, <code>podllama-autocomplete</code>, <code>podllama-thinking</code>, <code>podllama-instruct</code>, and configured GGUF models.</li>
+<li><strong>Persona Schema &amp; Categories API (<code>test_personas_api</code>)</strong>: Validates <code>GET /v1/personas</code> and <code>GET /personas</code> through proxy pass-through to internal port 8080, verifying all 30 personas across 11 categories with nested <code>ui_metadata</code>, <code>llm_config</code>, and <code>prompt_blueprint</code>.</li>
+<li><strong>Slash Command Resolution (<code>test_persona_slash_command_resolution</code>)</strong>: Verifies that slash shortcuts (<code>/prof</code>, <code>/algo</code>, <code>/cp</code>, <code>/dl</code>, <code>/architect</code>, <code>/web</code>, <code>/sec</code>, <code>/paper</code>, <code>/flutter-android</code>, etc.) map to valid system prompt blueprints.</li>
+<li><strong>Prompt Processing &amp; Chat Generation (<code>test_prompt_processing</code>)</strong>: Validates non-streaming code generation over <code>POST /v1/chat/completions</code> on <code>podllama-chat</code>.</li>
+<li><strong>Reasoning &amp; CoT Thinking (<code>test_thinking_model_api</code>)</strong>: Submits analytical reasoning prompts to <code>podllama-thinking</code>, verifying chain-of-thought extraction and dynamic model swapping to DeepSeek-R1.</li>
+<li><strong>Instruct Model Inference (<code>test_instruct_model_api</code>)</strong>: Validates direct instruction execution on <code>podllama-instruct</code> (<code>qwen2.5-coder-7b-instruct-q4_k_m.gguf</code>).</li>
+<li><strong>Persona System Prompt &amp; Constraint Injection (<code>test_persona_completion_features</code>)</strong>: Confirms that persona selections inject domain skillsets, LaTeX equations (<code><span class="inline-math">$...$</span></code>), and algorithmic complexity constraints into model completions.</li>
+<li><strong>SSE Streaming Token Ingestion (<code>test_chat_model_streaming</code>)</strong>: Validates real-time Server-Sent Events (<code>text/event-stream</code>) chunk delivery over HTTP without buffer starvation.</li>
+<li><strong>Fill-In-The-Middle (FIM) Autocomplete (<code>test_autocomplete_model</code>)</strong>: Tests code prefix/suffix completions against <code>podllama_autocomplete</code> (Port 8081) with <code>&lt;|fim_prefix|&gt;...&lt;|fim_suffix|&gt;...&lt;|fim_middle|&gt;</code>.</li>
+<li><strong>Tool Calling &amp; Structured Output (<code>test_tool_calling</code>)</strong>: Validates OpenAI function/tool calling execution schemas and JSON argument parsing.</li>
+<li><strong>Idle Auto-Stop &amp; Cold-Start Recovery (<code>test_auto_stop_and_recovery</code>)</strong>: Verifies supervisor process termination after idle timeout (0 MB VRAM mode) and transparent re-spawn upon subsequent requests.</li>
+</ol>
+<h3 id="9-2-automated-unit-test-suites-tests-unit-tests-py">9.2 Automated Unit Test Suites (<code>tests/unit_tests.py</code>)</h3>
+<p>In addition to live smoke tests, PodLlama enforces 9 automated unit test suites in CI/CD:</p>
+<ul>
+<li><strong>[1/6]</strong> YAML Configuration Files &amp; Sync (<code>model_conf.yaml</code> and <code>litellm_config.yaml</code>).</li>
+<li><strong>[1.5/6]</strong> Category-Wise Personas &amp; Skills JSON Configuration &amp; In-Memory Loading (<code>config/personas.json</code>).</li>
+<li><strong>[2/6]</strong> Model Swapper Resolution Logic (Chat, Thinking, Autocomplete, Instruct, GGUFs).</li>
+<li><strong>[3/6]</strong> Shell Script Executable Permissions (<code>entrypoint-llamacpp.sh</code>, <code>entrypoint-cli.sh</code>, <code>entrypoint-omp.sh</code>, <code>download_models.py</code>, <code>run_podman.sh</code>).</li>
+<li><strong>[4/6]</strong> Container Definitions &amp; SELinux Volume Flags (<code>compose.yaml</code> with <code>:z</code> and <code>:ro,z</code>).</li>
+<li><strong>[5/6]</strong> Chat Swapper Idle Timeout Configuration Resolution (<code>idle_timeout_seconds: 600</code>).</li>
+<li><strong>[6/6]</strong> Makefile Targets &amp; Alias Parity (<code>build</code>, <code>run</code>, <code>up</code>, <code>down</code>, <code>test</code>, <code>smoke-test</code>).</li>
+<li><strong>[7/8]</strong> VS Code Extension Manifest &amp; Build Artifacts (<code>podllama-code-1.2.1.vsix</code>).</li>
+<li><strong>[8/8]</strong> LiteLLM Model Routing Alias Mapping (<code>podllama-chat</code>, <code>podllama-thinking</code>, <code>podllama-instruct</code>).</li>
+</ul>
+<hr>
+<h2 id="10-conclusion-future-roadmap">10. Conclusion &amp; Future Roadmap</h2>
+<p>PodLlama provides a comprehensive, enterprise-ready solution to the privacy, security, and economic challenges of cloud-based AI code assistants. By combining rootless Podman sandboxing, cross-vendor Vulkan GPU acceleration, dual-model concurrency, elastic zero-VRAM lifecycle management, and a structured 30-persona blueprint taxonomy, PodLlama proves that local, air-gapped AI development environments can meet or exceed the capabilities of proprietary SaaS alternatives.</p>
+<h3 id="future-research-directions">Future Research Directions:</h3>
+<ul>
+<li><strong>Speculative Decoding</strong>: Orchestrating the 0.5B autocomplete model as a speculative drafter for the 7B/14B reasoning models to increase generation throughput by 2–3×.</li>
+<li><strong>Automated Local Fine-Tuning</strong>: Developing rootless container pipelines for LoRA parameter-efficient fine-tuning on local repository git histories.</li>
+<li><strong>Multi-Agent Workspace Sandboxing</strong>: Extending SELinux sub-category isolation to support collaborative multi-agent teams operating simultaneously within shared repositories.</li>
+</ul>
+<hr>
+<h2 id="references">References</h2>
+<ol>
+<li>Khronos Group. <em>Vulkan 1.3 Specification</em>. https://www.khronos.org/vulkan/</li>
+<li>Gerganov, G., et al. <em>llama.cpp: Port of Facebook&#x27;s LLaMA model in C/C++</em>. https://github.com/ggerganov/llama.cpp</li>
+<li>Qwen Team. <em>Qwen2.5-Coder: Powerful, Diverse, and Practical Code Large Language Models</em>. Alibaba Group, 2024.</li>
+<li>DeepSeek-AI. <em>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</em>. 2025.</li>
+<li>Walsh, D., et al. <em>Podman and Rootless Container Architecture</em>. Red Hat / Open Container Initiative, 2020.</li>
+<li>BerriAI. <em>LiteLLM: Call 100+ LLM APIs using the OpenAI format</em>. https://github.com/BerriAI/litellm</li>
+<li>National Institute of Standards and Technology (NIST). <em>Zero Trust Architecture (SP 800-207)</em>. 2020.</li>
+</ol>
+      </article>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2026 PodLlama Project. Open source under the <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue);">GNU GPLv3 License</a>.</div>
+        <div>Hosted on <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue);">GitHub Pages</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Automated Device & Mobile Browser Auto-Detection and Layout Controller -->
+  <script>
+    (function () {
+      'use strict';
+      function detectDeviceState() {
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        const isNarrow = window.innerWidth <= 768;
+        const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isMobile = isNarrow || (isTouch && window.innerWidth <= 1024) || isMobileUA;
+        const root = document.documentElement;
+        if (isMobile) {
+          root.classList.add('is-mobile');
+          root.classList.remove('is-desktop');
+          root.setAttribute('data-device', 'mobile');
+        } else {
+          root.classList.add('is-desktop');
+          root.classList.remove('is-mobile');
+          root.setAttribute('data-device', 'desktop');
+        }
+      }
+      detectDeviceState();
+      window.addEventListener('resize', detectDeviceState, { passive: true });
+      window.addEventListener('orientationchange', detectDeviceState, { passive: true });
+
+      // Mobile Navigation Drawer Controller
+      const toggleBtn = document.getElementById('mobileMenuToggle');
+      const drawerCloseBtn = document.getElementById('mobileDrawerClose');
+      const drawer = document.getElementById('mobileNavDrawer');
+      const backdrop = document.getElementById('mobileNavBackdrop');
+      const navLinks = document.querySelectorAll('.mobile-nav-link');
+
+      function setMobileMenuOpen(open) {
+        if (!drawer || !backdrop || !toggleBtn) return;
+        const willOpen = (open !== undefined) ? open : !drawer.classList.contains('active');
+        drawer.classList.toggle('active', willOpen);
+        backdrop.classList.toggle('active', willOpen);
+        toggleBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        document.body.style.overflow = willOpen ? 'hidden' : '';
+        const iconBars = toggleBtn.querySelector('.menu-icon-bars');
+        const iconClose = toggleBtn.querySelector('.menu-icon-close');
+        if (iconBars && iconClose) {
+          iconBars.style.display = willOpen ? 'none' : 'inline-block';
+          iconClose.style.display = willOpen ? 'inline-block' : 'none';
+        }
+      }
+
+      if (toggleBtn) toggleBtn.addEventListener('click', () => setMobileMenuOpen());
+      if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', () => setMobileMenuOpen(false));
+      if (backdrop) backdrop.addEventListener('click', () => setMobileMenuOpen(false));
+      navLinks.forEach(link => link.addEventListener('click', () => setMobileMenuOpen(false)));
+
+      // 3. ScrollSpy: Highlight active heading in Table of Contents
+      const tocLinks = document.querySelectorAll('.whitepaper-toc-link');
+      const sections = document.querySelectorAll('.whitepaper-article h2[id], .whitepaper-article h3[id]');
+
+      function highlightToc() {
+        var scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        var currentId = '';
+
+        sections.forEach(function (sec) {
+          var sectionTop = sec.offsetTop - 120;
+          if (scrollY >= sectionTop) {
+            currentId = sec.getAttribute('id');
+          }
+        });
+
+        tocLinks.forEach(function (link) {
+          if (link.getAttribute('href') === '#' + currentId) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', highlightToc, { passive: true });
+      highlightToc();
+    })();
+  </script>
+
+</body>
+</html>

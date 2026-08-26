@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>PodLlama - Air-Gapped, Vulkan GPU-Accelerated Local Agentic AI Coding Environment</title>
+  <meta name="description"
+    content="A high-performance, containerized local agentic AI coding environment powered by Podman, Vulkan GPU acceleration, LiteLLM unified proxy API, 30 domain personas, and VS Code IDE integration.">
+  <link rel="icon" type="image/svg+xml" href="./assets/brand/podllama-logo.svg">
+
+  <!-- Google Fonts: Inter & Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+  <!-- Sticky Navbar (Clean, Spacious Glassmorphism) -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="brand">
+        <div class="brand-icon">
+          <img src="./assets/brand/podllama-logo.svg" alt="PodLlama Logo" width="32" height="32">
+        </div>
+        <span>Pod<span class="highlight">Llama</span></span>
+        <span class="brand-badge">GPL-3.0</span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="#showcase" class="nav-link">Showcase</a></li>
+        <li><a href="#why-podllama" class="nav-link">Why PodLlama</a></li>
+        <li><a href="#privacy-security" class="nav-link">Security</a></li>
+        <li><a href="#architecture" class="nav-link">Architecture</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#personas" class="nav-link">Personas</a></li>
+        <li><a href="#models" class="nav-link">Models</a></li>
+        <li><a href="white_paper.html" class="nav-link"><i class="fa-solid fa-file-lines"></i> White Paper</a></li>
+        <li><a href="#getting-started" class="nav-link">Quickstart</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer"
+          class="btn btn-secondary btn-sm">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Toggle Button (Auto-displayed on mobile devices) -->
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu"
+        aria-expanded="false">
+        <i class="fa-solid fa-bars menu-icon-bars"></i>
+        <i class="fa-solid fa-xmark menu-icon-close" style="display: none;"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Drawer & Backdrop -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+  <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile Navigation">
+    <div class="mobile-drawer-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <img src="./assets/brand/podllama-logo.svg" alt="PodLlama Logo" width="28" height="28">
+        </div>
+        <span>Pod<span class="highlight">Llama</span></span>
+        <span class="brand-badge">GPL-3.0</span>
+      </div>
+      <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close navigation menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-list">
+      <li><a href="#showcase" class="mobile-nav-link"><i class="fa-solid fa-desktop"></i> IDE Showcase</a></li>
+      <li><a href="#why-podllama" class="mobile-nav-link"><i class="fa-solid fa-circle-question"></i> Why PodLlama</a>
+      </li>
+      <li><a href="#privacy-security" class="mobile-nav-link"><i class="fa-solid fa-shield-halved"></i> Security &
+          Privacy</a></li>
+      <li><a href="#architecture" class="mobile-nav-link"><i class="fa-solid fa-sitemap"></i> System Architecture</a>
+      </li>
+      <li><a href="#features" class="mobile-nav-link"><i class="fa-solid fa-cubes-stacked"></i> Unique Features</a></li>
+      <li><a href="#personas" class="mobile-nav-link"><i class="fa-solid fa-users-gear"></i> 30 Personas</a></li>
+      <li><a href="#models" class="mobile-nav-link"><i class="fa-solid fa-microchip"></i> Models & Sizing</a></li>
+      <li><a href="#getting-started" class="mobile-nav-link"><i class="fa-solid fa-rocket"></i> Quickstart Guide</a>
+      </li>
+      <li><a href="white_paper.html" class="mobile-nav-link"><i class="fa-solid fa-file-lines"></i> Technical White
+          Paper</a></li>
+    </ul>
+
+    <div class="mobile-drawer-actions">
+      <a href="#getting-started" class="btn btn-primary mobile-nav-link" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-bolt"></i> Quick Start
+      </a>
+      <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" class="btn btn-secondary"
+        style="width: 100%; justify-content: center;">
+        <i class="fa-brands fa-github"></i> GitHub Source
+      </a>
+    </div>
+  </aside>
+
+  <!-- Hero Section (Clean Split 2-Column Layout) -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-grid">
+
+        <!-- Left Column: Clear Value Proposition -->
+        <div class="hero-left">
+          <div class="hero-status-pill">
+            <span class="pulse-dot"></span>
+            <span>Runs on Any PC (GPU or CPU)</span>
+            <span class="pill-divider">&bull;</span>
+            <span>Linux / macOS / Windows using Podman</span>
+          </div>
+
+          <h1 class="hero-title">
+            Turn Any Computer into a<br>
+            <span class="gradient-text">Private AI Workstation.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Transform any standard laptop or desktop—with or without a dedicated GPU—into a high-speed local agentic AI
+            coding environment. Runs 100% locally on Linux, macOS, and Windows with Podman (preferred) or Docker.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#getting-started" class="btn btn-primary">
+              <i class="fa-solid fa-rocket"></i>
+              <span>Get Started in 5 Minutes</span>
+            </a>
+            <a href="#showcase" class="btn btn-secondary">
+              <i class="fa-solid fa-desktop"></i>
+              <span>Live Showcase</span>
+            </a>
+            <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+              <i class="fa-brands fa-github"></i>
+              <span>View Source</span>
+            </a>
+          </div>
+
+          <div class="hero-checklist">
+            <span><i class="fa-solid fa-circle-check text-cyan"></i> Dedicated GPU or CPU Fallback</span>
+            <span><i class="fa-solid fa-circle-check text-cyan"></i> Linux, macOS, Windows (Podman / Docker)</span>
+            <span><i class="fa-solid fa-circle-check text-cyan"></i> 100% Air-Gapped & Zero Telemetry</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Clean Terminal Showcase Card -->
+        <div class="hero-right">
+          <div class="hero-code-card">
+            <div class="code-card-header">
+              <div class="window-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span>bash &mdash; podllama quickstart</span>
+            </div>
+
+            <pre
+              class="code-content"><code><span class="code-comment"># 1. Automatic hardware & container check</span>
+<span class="code-prompt">$</span> make check-infra
+<span class="code-line"><span style="color: var(--accent-emerald);">✔ GPU Offload: Vulkan (/dev/dri) &bull; CPU Fallback Ready</span></span>
+<span class="code-line"><span style="color: var(--accent-emerald);">✔ Engine: Podman (Preferred) &bull; Linux / macOS / Windows</span></span>
+
+<span class="code-comment"># 2. Launch container microservices stack</span>
+<span class="code-prompt">$</span> make service-up
+<span class="code-line">[+] Running 3/3</span>
+<span class="code-line"><span style="color: var(--accent-emerald);">✔ podllama_chat:8080</span>         Ready (0 MB Idle)</span>
+<span class="code-line"><span style="color: var(--accent-emerald);">✔ podllama_autocomplete:8081</span> Ready (FIM)</span>
+<span class="code-line"><span style="color: var(--accent-cyan);">✔ podllama_proxy:4000</span>        Listening on :4000/v1</span></code></pre>
+
+            <div class="code-card-footer">
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot"></span> API: http://localhost:4000/v1
+              </span>
+              <span>OpenAI-Compatible</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Statistics Ribbon -->
+  <section class="stats-ribbon">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number gradient">0 KB</div>
+          <div class="stat-label">Cloud Telemetry / Code Egress</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">30</div>
+          <div class="stat-label">Specialized Domain AI Personas</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number gradient">0 MB</div>
+          <div class="stat-label">VRAM Usage When Idle (Auto-Stop)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Open Source (GNU GPLv3)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Live IDE & Developer Experience Showcase -->
+  <section id="showcase" class="section preview-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Developer Experience &amp; Live Verification</span>
+        <h2 class="section-title">PodLlama in Action: Native VS Code IDE &amp; Air-Gapped Runtime</h2>
+        <p class="section-description">
+          A high-performance local AI coding environment uniting native IDE chat, multi-session parallel streaming, 30 domain personas, and empirical proof of zero cloud network egress.
+        </p>
+      </div>
+
+      <div class="ide-showcase-wrapper">
+        <div class="ide-showcase-stack">
+          <!-- Screenshot 1: IDE & Container Terminal (Full Width) -->
+          <div class="ide-window-frame">
+            <div class="ide-window-header">
+              <div class="window-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <div class="ide-window-title">
+                <i class="fa-solid fa-code"></i> podllama.git &mdash; PodLlama Code (Native VS Code Extension &times; Rootless Microservices Stack)
+              </div>
+              <div class="ide-window-badge">
+                <span class="pulse-dot"></span> IDE &amp; Containers Active (Port 4000)
+              </div>
+            </div>
+
+            <div class="ide-window-body">
+              <a href="./assets/screenshots/podllama-ide-screenshot.png" class="ide-screenshot-link image-modal-trigger" data-modal-src="./assets/screenshots/podllama-ide-screenshot.png" data-modal-title="PodLlama Code &mdash; Native VS Code Extension &amp; Rootless Containers" data-modal-caption="VS Code editor with webview chat (/algo Algorithm Specialist) and Podman microservices terminal." title="Click to view full-resolution screenshot in modal">
+                <img src="./assets/screenshots/podllama-ide-screenshot.png" alt="PodLlama VS Code Extension and Container Microservices in Action" class="ide-screenshot-img" width="1024" height="685" loading="lazy">
+                <div class="ide-screenshot-overlay">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i>
+                  <span>Click to Enlarge</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="ide-frame-caption">
+              <i class="fa-solid fa-terminal" style="color: var(--accent-blue);"></i>
+              <span><strong>Developer Workflow:</strong> Companion webview running the <code>/algo</code> Algorithm Specialist solving algorithmic challenges while the integrated terminal monitors <code>podllama_chat</code>, <code>podllama_autocomplete</code>, and <code>podllama_proxy</code> containers.</span>
+            </div>
+          </div>
+
+          <!-- Screenshot 2: System Resources & Zero Network Egress (Full Width) -->
+          <div class="ide-window-frame">
+            <div class="ide-window-header">
+              <div class="window-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <div class="ide-window-title">
+                <i class="fa-solid fa-chart-line"></i> GNOME System Monitor &mdash; Hardware Resource Footprint &amp; Air-Gapped Network Verification
+              </div>
+              <div class="ide-window-badge">
+                <span class="pulse-dot"></span> 0 B/s Cloud Egress (100% Air-Gapped)
+              </div>
+            </div>
+
+            <div class="ide-window-body">
+              <a href="./assets/screenshots/podllama-resources-screenshot.png" class="ide-screenshot-link image-modal-trigger" data-modal-src="./assets/screenshots/podllama-resources-screenshot.png" data-modal-title="GNOME System Monitor &mdash; Hardware Resource &amp; Air-Gapped Network Verification" data-modal-caption="Active inference verification: Flat 340 B/s network (0 B/s cloud egress), ~1% CPU offloaded to GPU, and 13.9 GB total system memory." title="Click to view full-resolution hardware monitor in modal">
+                <img src="./assets/screenshots/podllama-resources-screenshot.png" alt="PodLlama System Monitor showing low CPU utilization, lean RAM footprint, and flat network egress" class="ide-screenshot-img" width="1024" height="685" loading="lazy">
+                <div class="ide-screenshot-overlay">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i>
+                  <span>Click to Enlarge</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="ide-frame-caption">
+              <i class="fa-solid fa-shield-halved" style="color: var(--accent-blue);"></i>
+              <span><strong>Empirical Air-Gapped Proof:</strong> Active token generation with 0 B/s external network egress (flat 340 B/s localhost loopback), ~1% host CPU usage offloaded via Vulkan GPU compute, and controlled 13.9 GB total system memory usage.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Key Architecture Highlights Visible in Screenshots -->
+        <div class="ide-callouts-grid">
+          <div class="ide-callout-card">
+            <div class="ide-callout-icon"><i class="fa-solid fa-window-restore"></i></div>
+            <div class="ide-callout-title">PodLlama Code Webview</div>
+            <div class="ide-callout-desc">Native VS Code companion panel featuring multi-turn conversation streaming, markdown rendering, and model switching.</div>
+          </div>
+
+          <div class="ide-callout-card">
+            <div class="ide-callout-icon"><i class="fa-solid fa-users-gear"></i></div>
+            <div class="ide-callout-title">30 Domain Personas (/algo)</div>
+            <div class="ide-callout-desc">In-memory prompt blueprints loaded from <code>config/personas.json</code>, here solving complex algorithmic optimization.</div>
+          </div>
+
+          <div class="ide-callout-card">
+            <div class="ide-callout-icon"><i class="fa-solid fa-ban"></i></div>
+            <div class="ide-callout-title">Verified Air-Gapped Privacy</div>
+            <div class="ide-callout-desc">Empirical proof of zero external telemetry and zero network egress—your private source code never leaves localhost.</div>
+          </div>
+
+          <div class="ide-callout-card">
+            <div class="ide-callout-icon"><i class="fa-solid fa-microchip"></i></div>
+            <div class="ide-callout-title">Lean Hardware Footprint</div>
+            <div class="ide-callout-desc">Vulkan GPU layer offload keeps host CPU usage at ~1% while automated idle timer frees 100% VRAM when inactive.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Why PodLlama & Problem Statement -->
+  <section id="why-podllama" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">The Problem & The Solution</span>
+        <h2 class="section-title">Why Developers & Enterprises Need PodLlama</h2>
+        <p class="section-description">
+          Cloud-based AI assistants require sending proprietary codebases and trade secrets to third-party endpoints.
+          PodLlama fundamentally reclaims your privacy, control, and developer velocity.
+        </p>
+      </div>
+
+      <div class="mobile-table-hint">
+        <i class="fa-solid fa-arrows-left-right"></i>
+        <span>Swipe horizontally to view full comparison</span>
+      </div>
+      <div class="comparison-container">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="feature-col">Capability</th>
+              <th class="cloud-col"><i class="fa-solid fa-cloud"></i> Traditional Cloud AI Services</th>
+              <th class="podllama-col"><i class="fa-solid fa-cube"></i> PodLlama Container Environment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feature-col">Source Code Privacy</td>
+              <td class="cloud-col">Code snippets, API keys, and context sent over the public internet to third-party
+                servers.</td>
+              <td class="podllama-col"><strong>100% Air-Gapped & Local:</strong> Zero bytes leave your host machine.
+                Verifiable at kernel level.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Recurring Costs</td>
+              <td class="cloud-col">Monthly per-seat subscriptions ($20&ndash;$40/mo/dev) or metered token billing per
+                completion.</td>
+              <td class="podllama-col"><strong>$0.00 Token Cost:</strong> Unlimited completions, reasoning, and
+                autocomplete runs for free.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Hardware Acceleration</td>
+              <td class="cloud-col">Requires costly remote cloud GPU clusters or specialized proprietary local CUDA
+                toolchains.</td>
+              <td class="podllama-col"><strong>Cross-Vendor Vulkan (Custom llama.cpp Build):</strong> Uses a custom
+                build of llama.cpp enabling the host computer to use Vulkan GPU layer offloading on Intel Arc, AMD
+                Radeon, & NVIDIA without proprietary drivers.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">IDE & CLI Compatibility</td>
+              <td class="cloud-col">Proprietary closed-source plugins bound to specific editor vendors or cloud
+                subscriptions.</td>
+              <td class="podllama-col"><strong>OpenAI-Compatible API (Port 4000):</strong> Native VS Code extension,
+                pi.dev, Oh My Pi, Continue, & Cline.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Agent Execution Security</td>
+              <td class="cloud-col">AI agents run commands directly on your uncontained host OS with full user privilege
+                access.</td>
+              <td class="podllama-col"><strong>Rootless Container Sandboxing:</strong> User namespace mapping & SELinux
+                isolation confine all tool executions.</td>
+            </tr>
+            <tr>
+              <td class="feature-col">Memory & Resource Sizing</td>
+              <td class="cloud-col">Models run 24/7 on remote nodes; local tools lock 10&ndash;20 GB VRAM permanently on
+                host machines.</td>
+              <td class="podllama-col"><strong>Configurable Idle Auto-Stop:</strong> Automatically releases 100% of LLM
+                VRAM/RAM when idle (>600s).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Data Privacy & Security Deep Dive -->
+  <section id="privacy-security" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Zero-Trust Security Architecture</span>
+        <h2 class="section-title">Strict Data Privacy & Sandboxed Execution</h2>
+        <p class="section-description">
+          When an autonomous AI agent or coding assistant suggests terminal commands or refactors source files,
+          isolation is not optional. PodLlama implements true defense-in-depth security.
+        </p>
+      </div>
+
+      <div class="security-grid">
+        <div class="security-card">
+          <div class="security-icon"><i class="fa-solid fa-user-shield"></i></div>
+          <h3 class="security-title">Rootless Podman User Namespace Mapping</h3>
+          <p class="security-body">
+            All services and CLI agents run under unprivileged rootless Podman containers using
+            <code>--userns=keep-id</code>. The internal container process matches your exact host UID and GID without
+            granting root privileges, completely preventing privilege escalation vulnerabilities.
+          </p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-icon"><i class="fa-solid fa-lock"></i></div>
+          <h3 class="security-title">SELinux Volume Boundary Isolation</h3>
+          <p class="security-body">
+            Workspace folders and model caches are mounted with strict SELinux volume relabeling (<code>:z</code> for
+            shared writable workspace and <code>:ro,z</code> for read-only model weights). This prevents agent processes
+            from escaping the mounted project directory to inspect host SSH keys or private credentials.
+          </p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-icon"><i class="fa-solid fa-network-wired"></i></div>
+          <h3 class="security-title">Internal Container Microservices Network</h3>
+          <p class="security-body">
+            Only the LiteLLM Proxy on port 4000 is published to host <code>127.0.0.1</code>. The chat model swapper
+            (port 8080) and autocomplete engine (port 8081) remain sealed inside the internal Podman bridge network
+            (<code>containers_default</code>), preventing unauthorized network exposure.
+          </p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-icon"><i class="fa-solid fa-ban"></i></div>
+          <h3 class="security-title">100% Air-Gapped & Zero Outbound Telemetry</h3>
+          <p class="security-body">
+            The model server and proxy run without requiring internet connectivity after model download. No telemetry,
+            usage tracking, prompt logs, or metric pings are sent to any external server. Compliance with strict
+            enterprise NDA, HIPAA, and GDPR requirements is guaranteed.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: High-Level Architecture Visuals -->
+  <section id="architecture" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">System Architecture</span>
+        <h2 class="section-title">Decoupled 4-Layer Microservices Topology</h2>
+        <p class="section-description">
+          Derived from PodLlama's high-level architecture specification, the environment decouples IDE clients,
+          intelligent routing, containerized inference engines, and host hardware acceleration.
+        </p>
+      </div>
+
+      <div class="arch-visual-container">
+        <!-- Layer 1 -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="arch-layer-title">
+              <i class="fa-solid fa-desktop" style="color: var(--accent-blue);"></i>
+              <span>1. Client & IDE Integration Layer</span>
+            </div>
+            <span class="arch-layer-tag">Host Client Interfaces</span>
+          </div>
+          <div class="arch-nodes-grid">
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-code"></i> PodLlama Code Extension</div>
+              <div class="arch-node-desc">Official VS Code extension with multi-session parallel streaming, live
+                Markdown rendering, inline diff review, and context attachments.</div>
+            </div>
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-terminal"></i> podllama-cli Agent</div>
+              <div class="arch-node-desc">Containerized official pi.dev & Oh My Pi (omp.sh) workspace agents with
+                automated tool execution in sandboxed namespaces.</div>
+            </div>
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-puzzle-piece"></i> Third-Party IDEs</div>
+              <div class="arch-node-desc">Universal integration with Continue.dev, Cline, Cursor, Roo Code, and any
+                standard OpenAI-compatible client.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-connector"><i class="fa-solid fa-arrow-down"></i> &nbsp; REST / SSE Stream Requests (OpenAI
+          Standard API)</div>
+
+        <!-- Layer 2 -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="arch-layer-title">
+              <i class="fa-solid fa-route" style="color: var(--accent-indigo);"></i>
+              <span>2. Unified Routing Proxy Layer</span>
+            </div>
+            <span class="arch-layer-tag">Port 4000 Gateway</span>
+          </div>
+          <div class="arch-nodes-grid">
+            <div class="arch-node" style="grid-column: 1 / -1;">
+              <div class="arch-node-title"><i class="fa-solid fa-server"></i> podllama_proxy &mdash; LiteLLM Unified
+                Router (http://localhost:4000/v1)</div>
+              <div class="arch-node-desc">Exposes OpenAI-compatible endpoints (<code>/v1/chat/completions</code>,
+                <code>/v1/completions</code>, <code>/v1/models</code>, <code>/health/liveliness</code>). Dynamically
+                routes chat & reasoning models to port 8080 and autocomplete requests to port 8081. Routes
+                <code>/v1/personas</code> via direct proxy pass-through.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-connector"><i class="fa-solid fa-arrow-down"></i> &nbsp; Internal Container Network Routing
+          (containers_default)</div>
+
+        <!-- Layer 3 -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="arch-layer-title">
+              <i class="fa-solid fa-boxes-stacked" style="color: var(--accent-cyan);"></i>
+              <span>3. Podman Container Microservices Stack</span>
+            </div>
+            <span class="arch-layer-tag">Fedora 44 Minimal Microservices</span>
+          </div>
+          <div class="arch-nodes-grid">
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-comments"></i> podllama_chat (Port 8080)</div>
+              <div class="arch-node-desc">Supervised by multithreaded <code>chat_swapper.py</code>. Hosts
+                <code>podllama-chat</code> (7B Instruct) and <code>podllama-thinking</code> (7B / 14B R1 Distill).
+                Features zero-VRAM idle auto-stop timer.
+              </div>
+            </div>
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-wand-magic-sparkles"></i> podllama_autocomplete (Port
+                8081)</div>
+              <div class="arch-node-desc">Dedicated Fill-In-the-Middle (FIM) service hosting low-latency models
+                (Qwen2.5-Coder 0.5B / 1.5B). Runs concurrently without interrupting active chat sessions.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-connector"><i class="fa-solid fa-arrow-down"></i> &nbsp; Hardware GPU Device Binding (/dev/dri)
+          & Thread Fallback</div>
+
+        <!-- Layer 4 -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="arch-layer-title">
+              <i class="fa-solid fa-microchip" style="color: var(--accent-emerald);"></i>
+              <span>4. Host Hardware Acceleration & Security Layer</span>
+            </div>
+            <span class="arch-layer-tag">Kernel & Driver Interfaces</span>
+          </div>
+          <div class="arch-nodes-grid">
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-bolt"></i> Custom llama.cpp Vulkan Build</div>
+              <div class="arch-node-desc">Packages a custom build of llama.cpp compiled with
+                <code>-DGGML_VULKAN=ON</code>, enabling the host computer to use Vulkan compute queues via
+                <code>/dev/dri</code> across Intel Arc/Xe, AMD Radeon, and NVIDIA.
+              </div>
+            </div>
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-cpu"></i> Host Multi-Threaded CPU Pool</div>
+              <div class="arch-node-desc">Automatic fallback inference engine when no dedicated GPU DRI device is
+                detected. Configures optimal thread allocations dynamically.</div>
+            </div>
+            <div class="arch-node">
+              <div class="arch-node-title"><i class="fa-solid fa-shield"></i> Rootless Namespaces & SELinux</div>
+              <div class="arch-node-desc">Kernel-enforced isolation ensuring containers cannot modify files outside
+                designated workspace boundaries.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Server & Client Features -->
+  <section id="features" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Comprehensive Capabilities</span>
+        <h2 class="section-title">Unique Server & Client Features</h2>
+        <p class="section-description">
+          Built from the ground up for developer productivity, universal hardware adaptability, and zero-leakage
+          security.
+        </p>
+      </div>
+
+      <div class="features-grid-3">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-laptop-code"></i></div>
+          <h3 class="feature-card-title">Universal Hardware & OS Adaptability</h3>
+          <p class="feature-card-desc">
+            Turns any PC or laptop into an LLM workstation. Powered by a custom build of llama.cpp with Vulkan compute
+            shaders, it enables the host computer to use Vulkan to offload transformer layers to Intel Arc, AMD Radeon,
+            or NVIDIA GPUs via /dev/dri, or seamlessly fallback to multi-threaded CPU inference. Runs across Linux,
+            macOS, and Windows on Podman (preferred) or Docker.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-arrows-split-up-and-left"></i></div>
+          <h3 class="feature-card-title">Dual-Model Concurrency</h3>
+          <p class="feature-card-desc">
+            Dedicated chat (port 8080) and autocomplete (port 8081) services operate concurrently. Fast inline
+            ghost-text suggestions continue rendering even while a complex multi-turn reasoning stream is in progress.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-clock"></i></div>
+          <h3 class="feature-card-title">Idle Auto-Stop (0 MB VRAM)</h3>
+          <p class="feature-card-desc">
+            The chat swapper supervisor tracks idle time and automatically terminates the backend model process after
+            inactivity (default 600s). Frees 100% of LLM VRAM and RAM until the next incoming prompt cold-starts it
+            seamlessly.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-shuffle"></i></div>
+          <h3 class="feature-card-title">Multithreaded Model Auto-Swapper</h3>
+          <p class="feature-card-desc">
+            Powered by <code>chat_swapper.py</code> on port 8080. Automatically unloads and hot-swaps between general
+            chat (<code>podllama-chat</code>) and deep reasoning (<code>podllama-thinking</code>) on the fly without
+            restarting container stacks.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-layer-group"></i></div>
+          <h3 class="feature-card-title">Multi-Session Parallel Streaming</h3>
+          <p class="feature-card-desc">
+            The companion VS Code extension allows launching multiple generation streams across separate conversations
+            simultaneously. Background streams continue accumulating tokens in memory without aborting.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-file-export"></i></div>
+          <h3 class="feature-card-title">Session Markdown Export & Attachments</h3>
+          <p class="feature-card-desc">
+            Easily export full chat conversations as Markdown or insert them directly into active editor files. Attach
+            any workspace source file directly into prompts with a single click.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper"><i class="fa-solid fa-terminal"></i></div>
+          <h3 class="feature-card-title">Sandboxed Workspace Agents</h3>
+          <p class="feature-card-desc">
+            Includes ready-to-run container wrappers for official <a href="https://pi.dev" target="_blank"
+              rel="noopener">pi.dev</a> and <a href="https://omp.sh" target="_blank" rel="noopener">Oh My Pi
+              (omp.sh)</a> terminal agents, allowing AI to safely execute commands inside your project.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: 30 Personas across 11 Specialized Categories -->
+  <section id="personas" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Expertise on Demand</span>
+        <h2 class="section-title">30 Specialized AI Personas across 11 Domain Categories</h2>
+        <p class="section-description">
+          The backend model swapper injects structured 3-tier prompt blueprints (<code>role_definition</code>,
+          <code>core_skills</code>, <code>strict_constraints</code>) for precision domain engineering. Trigger any
+          persona instantly via chat dropdowns or slash commands.
+        </p>
+      </div>
+
+      <div class="personas-grid">
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div>
+              <div class="persona-cat-name">Computer Science & Foundations</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">4 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Theoretical CS, discrete mathematics, algorithmic complexity, formal logic, and
+            academic problem solving.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/prof</span> &bull; University CS Professor</span>
+            <span class="persona-chip"><span class="slash">/algo</span> &bull; Algorithm Specialist</span>
+            <span class="persona-chip"><span class="slash">/cp</span> &bull; Competitive Programming Solver</span>
+            <span class="persona-chip"><span class="slash">/theorist</span> &bull; Theoretical Computer Scientist</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-brain"></i></div>
+            <div>
+              <div class="persona-cat-name">Artificial Intelligence & Machine Learning</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">4 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Deep neural architectures, MLOps inference optimization, AI safety guardrails,
+            and NLP/LLM engineering.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/dl</span> &bull; Deep Learning Scientist</span>
+            <span class="persona-chip"><span class="slash">/mlops</span> &bull; MLOps & Inference Engineer</span>
+            <span class="persona-chip"><span class="slash">/safety</span> &bull; AI Safety & Alignment Auditor</span>
+            <span class="persona-chip"><span class="slash">/nlp</span> &bull; NLP & LLM Specialist</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-cubes"></i></div>
+            <div>
+              <div class="persona-cat-name">Software Engineering & Architecture</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">7 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Enterprise architecture, polyglot clean code, full-stack web platforms, rapid
+            hackathons, and database systems.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/architect</span> &bull; Enterprise Solution Architect</span>
+            <span class="persona-chip"><span class="slash">/dev</span> &bull; Senior Software Engineer</span>
+            <span class="persona-chip"><span class="slash">/web</span> &bull; Full-Stack Web Architect</span>
+            <span class="persona-chip"><span class="slash">/db</span> &bull; Database & Storage Specialist</span>
+            <span class="persona-chip"><span class="slash">/hack</span> &bull; Hackathon MVP Prototyper</span>
+            <span class="persona-chip"><span class="slash">/codereview</span> &bull; Senior Code Reviewer</span>
+            <span class="persona-chip"><span class="slash">/rust</span> &bull; Rust Systems Engineer</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-server"></i></div>
+            <div>
+              <div class="persona-cat-name">Systems, DevOps & Cloud Infrastructure</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">3 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Container orchestration, Linux low-level systems programming, SRE observability,
+            and CI/CD pipelines.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/devops</span> &bull; DevOps Container Engineer</span>
+            <span class="persona-chip"><span class="slash">/systems</span> &bull; Linux Systems & Kernel Engineer</span>
+            <span class="persona-chip"><span class="slash">/sre</span> &bull; Site Reliability Engineer</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+              <div class="persona-cat-name">Cybersecurity & Governance</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">2 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Ethical penetration testing, vulnerability remediation, zero-trust cloud
+            infrastructure, and cryptographic security.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/sec</span> &bull; Cybersecurity Specialist</span>
+            <span class="persona-chip"><span class="slash">/cloudsec</span> &bull; Cloud Security Architect</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-microscope"></i></div>
+            <div>
+              <div class="persona-cat-name">Research, Academia & Data Science</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">3 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Academic paper writing, peer review critiques, statistical hypothesis testing,
+            and quantitative machine learning.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/paper</span> &bull; Academic Paper Author</span>
+            <span class="persona-chip"><span class="slash">/review</span> &bull; Scientific Peer Reviewer</span>
+            <span class="persona-chip"><span class="slash">/data</span> &bull; Data Scientist & Quant Analyst</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div>
+              <div class="persona-cat-name">App Development</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">3 Personas</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Cross-platform mobile, web, and desktop application development.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/flutter-android</span> &bull; Flutter App Developer
+              (Android)</span>
+            <span class="persona-chip"><span class="slash">/flutter-web</span> &bull; Flutter App Developer (Web)</span>
+            <span class="persona-chip"><span class="slash">/flutter-desktop</span> &bull; Flutter App Developer
+              (Desktop)</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-cloud"></i></div>
+            <div>
+              <div class="persona-cat-name">Cloud Native Solution Development</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">1 Persona</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Microservices, distributed systems, and highly concurrent backend architectures.
+          </div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/go-cloud</span> &bull; Go Cloud Native Developer</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-code"></i></div>
+            <div>
+              <div class="persona-cat-name">Static Web Development</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">1 Persona</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">HTML5, CSS3, vanilla JavaScript, and zero-dependency fast landing pages.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/static</span> &bull; Static Web Developer</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-robot"></i></div>
+            <div>
+              <div class="persona-cat-name">AI Agents & Automation</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">1 Persona</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Agentic LLM systems, tool-use pipelines, multi-agent orchestration, and
+            autonomous task execution.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/agent</span> &bull; AI Agent Architect</span>
+          </div>
+        </div>
+
+        <div class="persona-cat-card">
+          <div class="persona-cat-header">
+            <div class="persona-cat-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <div>
+              <div class="persona-cat-name">Infrastructure as Code</div>
+              <div style="font-size: 0.76rem; color: var(--text-muted); font-family: var(--font-mono);">1 Persona</div>
+            </div>
+          </div>
+          <div class="persona-cat-desc">Declarative cloud provisioning, Terraform, Ansible, and GitOps workflows.</div>
+          <div class="persona-chips">
+            <span class="persona-chip"><span class="slash">/terraform</span> &bull; Terraform & IaC Engineer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Models Catalog & Hardware Sizing -->
+  <section id="models" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Curated Model Suite</span>
+        <h2 class="section-title">Supported Models & Hardware Sizing</h2>
+        <p class="section-description">
+          PodLlama manages a curated suite of 6 GGUF models optimized for rapid startup, high coding benchmark scores,
+          and efficient Vulkan layer offloading.
+        </p>
+      </div>
+
+      <div class="mobile-table-hint">
+        <i class="fa-solid fa-arrows-left-right"></i>
+        <span>Swipe horizontally to view all model specs</span>
+      </div>
+      <div class="models-table-container">
+        <table class="models-table">
+          <thead>
+            <tr>
+              <th>Model Name</th>
+              <th>Primary Role</th>
+              <th>Backend Service</th>
+              <th>Quantization & Size</th>
+              <th>Hardware Sizing (VRAM / RAM)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Qwen2.5-Coder-0.5B-Instruct</strong></td>
+              <td>Low-Latency Autocomplete (FIM)</td>
+              <td><code>podllama_autocomplete</code> (Port 8081)</td>
+              <td><code>Q8_0</code> &bull; 0.63 GB</td>
+              <td>1 GB VRAM &bull; 2 GB System RAM</td>
+            </tr>
+            <tr>
+              <td><strong>Qwen2.5-Coder-1.5B-Instruct</strong></td>
+              <td>High-Capacity Autocomplete (FIM)</td>
+              <td><code>podllama_autocomplete</code> (Port 8081)</td>
+              <td><code>Q8_0</code> &bull; 1.89 GB</td>
+              <td>2 GB VRAM &bull; 4 GB System RAM</td>
+            </tr>
+            <tr>
+              <td><strong>Qwen2.5-Coder-3B-Instruct</strong></td>
+              <td>Lightweight Chat / Edge Devices</td>
+              <td><code>podllama_chat</code> (Port 8080)</td>
+              <td><code>Q4_K_M</code> &bull; 2.05 GB</td>
+              <td>3 GB VRAM &bull; 6 GB System RAM</td>
+            </tr>
+            <tr>
+              <td><strong>Qwen2.5-Coder-7B-Instruct</strong></td>
+              <td>Standard Chat & Code Generation</td>
+              <td><code>podllama_chat</code> (Port 8080)</td>
+              <td><code>Q4_K_M</code> &bull; 4.68 GB</td>
+              <td>6 GB VRAM &bull; 8 GB System RAM</td>
+            </tr>
+            <tr>
+              <td><strong>DeepSeek-R1-Distill-Qwen-7B</strong></td>
+              <td>Step-by-Step Chain-of-Thought Reasoning</td>
+              <td><code>podllama_chat</code> (Port 8080)</td>
+              <td><code>Q4_K_M</code> &bull; 4.68 GB</td>
+              <td>6 GB VRAM &bull; 8 GB System RAM</td>
+            </tr>
+            <tr>
+              <td><strong>DeepSeek-R1-Distill-Qwen-14B</strong></td>
+              <td>Deep Multi-Step Logic & Architectural Proofs</td>
+              <td><code>podllama_chat</code> (Port 8080)</td>
+              <td><code>Q4_K_M</code> &bull; 8.99 GB</td>
+              <td>12 GB+ VRAM &bull; 16 GB+ System RAM</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Step-by-Step Getting Started Walkthrough -->
+  <section id="getting-started" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Quick Start Guide</span>
+        <h2 class="section-title">Get Running in 6 Simple Steps</h2>
+        <p class="section-description">
+          All configuration and orchestration are managed through automated Makefile targets and rootless Podman
+          containers.
+        </p>
+      </div>
+
+      <div class="steps-container">
+        <!-- Step 1 -->
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Verify System Infrastructure & GPU Acceleration</h3>
+            <p class="step-desc">Checks for Podman, Python 3, PyYAML, curl, and Vulkan GPU hardware DRI drivers
+              (<code>/dev/dri</code>):</p>
+            <div class="step-code-block">make check-infra</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Download LLM Model Weights</h3>
+            <p class="step-desc">Download active models (0.5B autocomplete, 7B chat, and 7B reasoning &mdash; ~9.8 GB
+              total) and verify SHA256 integrity:</p>
+            <div class="step-code-block">make download-active-models && make check-checksum</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Build Container Images (Custom llama.cpp Vulkan Build)</h3>
+            <p class="step-desc">Builds multi-stage container images featuring a custom build of llama.cpp compiled with
+              native Vulkan acceleration for the host computer to use Vulkan GPU compute, LiteLLM proxy router, and
+              workspace CLI agent images:</p>
+            <div class="step-code-block">make build</div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">Build & Install PodLlama Code VS Code Extension</h3>
+            <p class="step-desc">Compiles the TypeScript extension, generates the <code>.vsix</code> package, and
+              installs it directly into VS Code:</p>
+            <div class="step-code-block">make build-extension && make install-extension</div>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-card">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3 class="step-title">Launch Container Services Stack</h3>
+            <p class="step-desc">Starts Chat Server (8080), Autocomplete (8081), and LiteLLM Proxy on host port 4000 via
+              Podman Compose:</p>
+            <div class="step-code-block">make service-up && make service-status</div>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-card">
+          <div class="step-number">6</div>
+          <div class="step-content" style="width: 100%; min-width: 0;">
+            <h3 class="step-title">Verify Endpoints with Automated Smoke Tests</h3>
+            <p class="step-desc">Runs live 12-stage endpoint verification smoke tests validating chat, reasoning,
+              autocomplete, persona injection, streaming SSE, and idle auto-stop recovery:</p>
+            <div class="step-code-block">make smoke-test</div>
+            <!-- Terminal Log Card: make smoke-test Output -->
+            <div class="terminal-log-card">
+              <div class="terminal-log-header">
+                <div class="window-dots">
+                  <span class="dot dot-red"></span>
+                  <span class="dot dot-yellow"></span>
+                  <span class="dot dot-green"></span>
+                </div>
+                <div class="terminal-log-title">
+                  <i class="fa-solid fa-terminal"></i> Terminal &mdash; make smoke-test (12/12 Live Endpoints Verified)
+                </div>
+                <span class="terminal-log-badge"><i class="fa-solid fa-circle-check"></i> 12 / 12 PASSED</span>
+              </div>
+              <pre class="terminal-log-body"><code><span class="log-cmd">$ make smoke-test</span>
+<span class="log-cmd">python3 tests/smoke_tests.py</span>
+==================================================================
+<span class="log-highlight">       PodLlama Environment Comprehensive API Smoke Test Suite   </span>
+==================================================================
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 1: Proxy Liveliness Check (GET /health/liveliness)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/health/liveliness
+[SMOKE TEST]   Expected: Status 200 OK with liveliness message
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Response Payload: &#x27;&quot;I&#x27;m alive!&quot;&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> GET /health/liveliness active and healthy.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 2: List Models API (GET /v1/models)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/models
+[SMOKE TEST]   Expected: Status 200 OK with JSON array containing active model objects
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Registered Model IDs: [&#x27;podllama-chat&#x27;, &#x27;podllama-autocomplete&#x27;, &#x27;podllama-thinking&#x27;, &#x27;podllama-instruct&#x27;, &#x27;Qwen3.5-9B-Q4_K_M.gguf&#x27;, &#x27;DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf&#x27;, &#x27;qwen2.5-coder-0.5b-instruct-q4_k_m.gguf&#x27;]
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> GET /v1/models returned active model list successfully.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 3: Personas Taxonomy &amp; Skills API (GET /v1/personas)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/personas
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Registered Persona IDs (30 total across 11 categories): [&#x27;cs-professor&#x27;, &#x27;algo-specialist&#x27;, &#x27;cp-solver&#x27;, &#x27;math-cs-theorist&#x27;, &#x27;dl-researcher&#x27;, &#x27;mlops-engineer&#x27;, &#x27;ai-ethics-auditor&#x27;, &#x27;nlp-llm-specialist&#x27;]...
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> GET /v1/personas returned in-memory category-wise personas dataset successfully from http://127.0.0.1:4000/v1/personas.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 4: Persona Slash Command Mapping &amp; Resolution
+[SMOKE TEST]   Verified 30 unique slash command mappings: [&#x27;/prof&#x27;, &#x27;/algo&#x27;, &#x27;/cp&#x27;, &#x27;/theorist&#x27;, &#x27;/dl&#x27;, &#x27;/mlops&#x27;, &#x27;/safety&#x27;, &#x27;/nlp&#x27;, &#x27;/architect&#x27;, &#x27;/dev&#x27;]...
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Persona slash command mappings and uniqueness verified.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 5: Chat Completions (POST /v1/chat/completions - &#x27;podllama-chat&#x27;)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-chat
+[SMOKE TEST]   Expected: Status 200 OK with evaluated prompt_tokens and non-empty completion
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Prompt Tokens Evaluated: 52
+[SMOKE TEST]   Completion Tokens Generated: 24
+[SMOKE TEST]   Generated Sample: &#x27;Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: A Python code snippet defining&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Chat completions and token accounting verified.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 6: Deep Thinking &amp; Reasoning (POST /v1/chat/completions - &#x27;podllama-thinking&#x27;)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-thinking
+[SMOKE TEST]   Expected: Status 200 OK with DeepSeek-R1 reasoning output
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Thinking Output Sample: &#x27;Okay, so I need to explain the worst-case time complexity of quicksort in one sentence. Hmm, let&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Thinking model completions API verified successfully.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 7: Instruct Completions (POST /v1/chat/completions - &#x27;podllama-instruct&#x27;)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-instruct
+[SMOKE TEST]   Expected: Status 200 OK with Qwen 2.5 Coder 7B Instruct output
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Instruct Output Sample: &#x27;Certainly! Below is a Python function to compute the factorial of a given non-negative integer using both iterative and recursive methods.&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Instruct model (podllama-instruct) completions API verified successfully.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 8: Persona Prompt Injection &amp; Target Model Execution
+[SMOKE TEST]   Testing Persona: &#x27;cp-solver&#x27; (/cp) -&gt; Target Model: &#x27;podllama-chat&#x27;
+[SMOKE TEST]   Persona Skills: General
+[SMOKE TEST]     Response Status: 200 | Tokens Generated: 24
+[SMOKE TEST]     Sample Output: &quot;The user wants me to implement Kadane&#x27;s Algorithm to find the maximum subarray s&quot;...
+[SMOKE TEST]   Testing Persona: &#x27;hackathon-builder&#x27; (/hack) -&gt; Target Model: &#x27;podllama-chat&#x27;
+[SMOKE TEST]   Persona Skills: General
+[SMOKE TEST]     Response Status: 200 | Tokens Generated: 24
+[SMOKE TEST]     Sample Output: &#x27;Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Role:** Hackathon-buil&#x27;...
+[SMOKE TEST]   Testing Persona: &#x27;cs-professor&#x27; (/prof) -&gt; Target Model: &#x27;podllama-chat&#x27;
+[SMOKE TEST]   Persona Skills: General
+[SMOKE TEST]     Response Status: 200 | Tokens Generated: 24
+[SMOKE TEST]     Sample Output: &#x27;The user is asking for the Master Theorem recurrence relation in LaTeX notation.&#x27;...
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> All persona prompt injections and model executions completed successfully.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 9: Chat Streaming SSE (POST /v1/chat/completions with stream=true)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-chat (Stream Mode)
+[SMOKE TEST]   Expected: Server-Sent Events (SSE) data stream chunks ending with [DONE]
+  -&gt; Streaming Output Chunks: The user wants a one-line Python function to reverse a string. This is a simple task that can be accomplished using Python&#x27;s string slicing with a step of -
+[SMOKE TEST]   -&gt; Stream Chunks Received: 32
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Chat SSE token chunk streaming verified.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 10: Text Completions / Autocomplete (POST /v1/completions - &#x27;podllama-autocomplete&#x27;)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/completions
+[SMOKE TEST]   Request Model: podllama-autocomplete
+[SMOKE TEST]   Expected: Status 200 OK with FIM inline code completion text
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Prompt Tokens Evaluated: 27
+[SMOKE TEST]   Completion Tokens Generated: 14
+[SMOKE TEST]   Inline Completion Text: &#x27;fibonacci(n - 1) + fibonacci(n - 2)&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Autocomplete model prompt processing &amp; completion verified.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 11: Function &amp; Tool Calling (POST /v1/chat/completions - &#x27;podllama-chat&#x27;)
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-chat with function definitions
+[SMOKE TEST]   Expected: Status 200 OK without server error
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Tool calling request handled without server error.
+[SMOKE TEST] --------------------------------------------------
+[SMOKE TEST] API TEST 12: Auto-Stop &amp; Recovery Test (POST /v1/chat/completions after model stop)
+[SMOKE TEST]   Simulating model server stop / idle auto-shutdown...
+[SMOKE TEST]   -&gt; Successfully stopped backend llama-server via podman exec.
+[SMOKE TEST]   Target URL: http://127.0.0.1:4000/v1/chat/completions
+[SMOKE TEST]   Request Model: podllama-chat
+[SMOKE TEST]   Expected: Status 200 OK after automatic model reload &amp; swapper recovery
+[SMOKE TEST]   Response Status: 200
+[SMOKE TEST]   Recovery Latency: 4.14s
+[SMOKE TEST]   Response Output Sample: &#x27;&#x27;
+[SMOKE TEST]   <span class="log-passed">-&gt; PASSED:</span> Auto-stop recovery verified successfully.
+
+============================================================================================
+<span class="log-highlight">                      PodLlama API Smoke Test Execution Summary Report</span>
+============================================================================================
+#   | Test Name                        | Target Feature / Endpoint    | Status   | Duration
+--------------------------------------------------------------------------------------------
+1   | Proxy Liveliness Check           | GET /health/liveliness       | <span class="log-passed">PASSED</span>   |    0.01s
+2   | List Models API                  | GET /v1/models               | <span class="log-passed">PASSED</span>   |    0.00s
+3   | Personas Taxonomy &amp; Skills       | GET /v1/personas             | <span class="log-passed">PASSED</span>   |    0.01s
+4   | Persona Slash Commands           | 30 Slash Shortcuts           | <span class="log-passed">PASSED</span>   |    0.00s
+5   | Chat Completions &amp; Tokens        | podllama-chat                | <span class="log-passed">PASSED</span>   |   10.56s
+6   | Deep Thinking &amp; Reasoning        | podllama-thinking            | <span class="log-passed">PASSED</span>   |    6.44s
+7   | Instruct Completions             | podllama-instruct            | <span class="log-passed">PASSED</span>   |    6.26s
+8   | Persona Prompt Injection         | /cp, /hack, /prof            | <span class="log-passed">PASSED</span>   |   21.37s
+9   | Chat SSE Token Streaming         | Stream SSE Chunks            | <span class="log-passed">PASSED</span>   |    7.57s
+10  | Autocomplete FIM Completion      | podllama-autocomplete        | <span class="log-passed">PASSED</span>   |    1.79s
+11  | Function &amp; Tool Calling          | Tool Calling Defs            | <span class="log-passed">PASSED</span>   |    6.88s
+12  | Auto-Stop &amp; Recovery             | Cold-Start Reload            | <span class="log-passed">PASSED</span>   |    4.14s
+--------------------------------------------------------------------------------------------
+Total Tests: 12 | Passed: 12 | Failed: 0 | Total Elapsed Time: 66.25s
+============================================================================================
+<span class="log-success"> SUCCESS: All live API endpoint smoke tests passed successfully!</span>
+============================================================================================</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-title">
+            <img src="./assets/brand/podllama-logo.svg" alt="PodLlama Logo" width="24" height="24">
+            <span>PodLlama</span>
+          </div>
+          <p class="footer-brand-desc">
+            Air-gapped, Vulkan GPU-accelerated local agentic AI coding environment in Podman with unified LiteLLM
+            routing and VS
+            Code integration.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-column-title">Project & Source</h4>
+          <ul class="footer-links">
+            <li><a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer" class="footer-link"><i
+                  class="fa-brands fa-github"></i> GitHub Organization</a></li>
+            <li><a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer"
+                class="footer-link">Source Repository</a></li>
+            <li><a href="https://github.com/podllama/podllama/releases" target="_blank" rel="noopener noreferrer"
+                class="footer-link">Releases & VSIX</a></li>
+            <li><a href="https://github.com/podllama/podllama/blob/main/LICENSE" target="_blank"
+                rel="noopener noreferrer" class="footer-link">GPL-3.0 License</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-column-title">Documentation</h4>
+          <ul class="footer-links">
+            <li><a href="white_paper.html" class="footer-link"><i class="fa-solid fa-file-lines"></i> Technical White
+                Paper</a></li>
+            <li><a href="https://github.com/podllama/podllama/blob/main/docs/api.md" target="_blank"
+                rel="noopener noreferrer" class="footer-link">API Specification</a></li>
+            <li><a href="https://github.com/podllama/podllama/blob/main/docs/design.md" target="_blank"
+                rel="noopener noreferrer" class="footer-link">System Design</a></li>
+            <li><a href="https://github.com/podllama/podllama/blob/main/docs/features.md" target="_blank"
+                rel="noopener noreferrer" class="footer-link">Technical Features</a></li>
+            <li><a href="https://github.com/podllama/podllama/blob/main/docs/build_notes.md" target="_blank"
+                rel="noopener noreferrer" class="footer-link">Build Pipeline Notes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-column-title">Integrations</h4>
+          <ul class="footer-links">
+            <li><a href="#getting-started" class="footer-link">VS Code Extension</a></li>
+            <li><a href="https://pi.dev" target="_blank" rel="noopener noreferrer" class="footer-link">pi.dev Coding
+                Agent</a></li>
+            <li><a href="https://omp.sh" target="_blank" rel="noopener noreferrer" class="footer-link">Oh My Pi CLI
+                (omp.sh)</a></li>
+            <li><a href="https://github.com/BerriAI/litellm" target="_blank" rel="noopener noreferrer"
+                class="footer-link">LiteLLM Proxy Router</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 PodLlama Project. Open source under the <a href="https://www.gnu.org/licenses/gpl-3.0.html"
+            target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue);">GNU GPLv3 License</a>.</div>
+        <div>Hosted on <a href="https://github.com/podllama" target="_blank" rel="noopener noreferrer"
+            style="color: var(--accent-blue);">GitHub Pages</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Full-Resolution Image Lightbox Modal -->
+  <div class="image-modal-backdrop" id="imageModalBackdrop" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Screenshot Preview">
+    <div class="image-modal-container">
+      <div class="image-modal-header">
+        <div class="image-modal-title" id="imageModalTitle">
+          <i class="fa-solid fa-image"></i>
+          <span>Screenshot Preview</span>
+        </div>
+        <button class="image-modal-close" id="imageModalClose" aria-label="Close screenshot preview">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="image-modal-body">
+        <img src="" alt="Full Resolution Screenshot Preview" id="imageModalImg" class="image-modal-content">
+      </div>
+      <div class="image-modal-footer">
+        <span id="imageModalCaption">PodLlama Screenshot</span>
+        <span class="image-modal-hint"><kbd>ESC</kbd> or click outside to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Automated Device & Mobile Browser Auto-Detection and Layout Controller -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Device & Browser Heuristics Detection
+      function detectDeviceState() {
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+        const isNarrow = window.innerWidth <= 768;
+        const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+        // Comprehensive mobile determination
+        const isMobile = isNarrow || (isTouch && window.innerWidth <= 1024) || isMobileUA || (isCoarsePointer && isNarrow);
+
+        const root = document.documentElement;
+        if (isMobile) {
+          root.classList.add('is-mobile');
+          root.classList.remove('is-desktop');
+          root.setAttribute('data-device', 'mobile');
+        } else {
+          root.classList.add('is-desktop');
+          root.classList.remove('is-mobile');
+          root.setAttribute('data-device', 'desktop');
+        }
+      }
+
+      // Initial detection
+      detectDeviceState();
+
+      // Debounced event listeners for resize and orientation changes
+      let resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(detectDeviceState, 100);
+      }, { passive: true });
+
+      window.addEventListener('orientationchange', function () {
+        setTimeout(detectDeviceState, 150);
+      }, { passive: true });
+
+      // 2. Mobile Navigation Drawer Controller
+      const toggleBtn = document.getElementById('mobileMenuToggle');
+      const drawerCloseBtn = document.getElementById('mobileDrawerClose');
+      const drawer = document.getElementById('mobileNavDrawer');
+      const backdrop = document.getElementById('mobileNavBackdrop');
+      const navLinks = document.querySelectorAll('.mobile-nav-link');
+
+      function setMobileMenuOpen(open) {
+        if (!drawer || !backdrop || !toggleBtn) return;
+        const willOpen = (open !== undefined) ? open : !drawer.classList.contains('active');
+
+        drawer.classList.toggle('active', willOpen);
+        backdrop.classList.toggle('active', willOpen);
+        toggleBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+        // Prevent background scrolling when mobile menu is open
+        document.body.style.overflow = willOpen ? 'hidden' : '';
+
+        const iconBars = toggleBtn.querySelector('.menu-icon-bars');
+        const iconClose = toggleBtn.querySelector('.menu-icon-close');
+        if (iconBars && iconClose) {
+          iconBars.style.display = willOpen ? 'none' : 'inline-block';
+          iconClose.style.display = willOpen ? 'inline-block' : 'none';
+        }
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          setMobileMenuOpen();
+        });
+      }
+
+      if (drawerCloseBtn) {
+        drawerCloseBtn.addEventListener('click', function () {
+          setMobileMenuOpen(false);
+        });
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', function () {
+          setMobileMenuOpen(false);
+        });
+      }
+
+      // Close drawer upon clicking any navigation link
+      navLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          setMobileMenuOpen(false);
+        });
+      });
+
+      // Close drawer on Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drawer && drawer.classList.contains('active')) {
+          setMobileMenuOpen(false);
+        }
+      });
+
+      // 3. Full-Resolution Screenshot Lightbox Modal Controller
+      const modalBackdrop = document.getElementById('imageModalBackdrop');
+      const modalCloseBtn = document.getElementById('imageModalClose');
+      const modalImg = document.getElementById('imageModalImg');
+      const modalTitle = document.getElementById('imageModalTitle');
+      const modalCaption = document.getElementById('imageModalCaption');
+      const modalTriggers = document.querySelectorAll('.image-modal-trigger');
+
+      function openImageModal(src, titleHtml, captionText) {
+        if (!modalBackdrop || !modalImg) return;
+        modalImg.src = src;
+        if (modalTitle && titleHtml) {
+          modalTitle.innerHTML = '<i class="fa-solid fa-image"></i> <span>' + titleHtml + '</span>';
+        }
+        if (modalCaption && captionText) {
+          modalCaption.textContent = captionText;
+        }
+        modalBackdrop.classList.add('active');
+        modalBackdrop.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeImageModal() {
+        if (!modalBackdrop) return;
+        modalBackdrop.classList.remove('active');
+        modalBackdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      modalTriggers.forEach(function (trigger) {
+        trigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          const src = trigger.getAttribute('data-modal-src') || trigger.getAttribute('href');
+          const title = trigger.getAttribute('data-modal-title') || 'Screenshot Preview';
+          const caption = trigger.getAttribute('data-modal-caption') || '';
+          openImageModal(src, title, caption);
+        });
+      });
+
+      if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeImageModal);
+      }
+
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', function (e) {
+          if (e.target === modalBackdrop) {
+            closeImageModal();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modalBackdrop && modalBackdrop.classList.contains('active')) {
+          closeImageModal();
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
